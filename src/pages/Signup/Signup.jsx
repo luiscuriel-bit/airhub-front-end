@@ -5,42 +5,15 @@ import * as authService from '../../services/authService';
 const Signup = ({ setUser }) => {
     const navigate = useNavigate();
 
-    const initialState = {
-        username: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        passwordConfirmation: '',
-    };
-
     const [isSubmitting, setIsSubmitting] = useState(false); // This is to know when a form is already being submitted
     const [errorMessage, setErrorMessage] = useState('');
     const [invalidFields, setInvalidFields] = useState({});
     const [touchedFields, setTouchedFields] = useState({}); // Tracks the fields in the form that have been interacted with
-    const [formData, setFormData] = useState(initialState);
+    const [formData, setFormData] = useState({});
 
     const handleChange = event => setFormData({ ...formData, [event.target.name]: event.target.value });
     const handleBlur = event => setTouchedFields({ ...touchedFields, [event.target.name]: true });
-
-    const handleSubmit = async event => {
-        event.preventDefault();
-
-        if (isFormInvalid()) return;
-        setIsSubmitting(true);
-
-        try {
-            const newUser = await authService.signup(formData);
-            setUser(newUser);
-            navigate('/');
-        } catch (error) {
-            // This catches amy error that could come from authService
-            setErrorMessage(error.message);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
+    
     const isFormInvalid = () => {
         const validations = {};
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -75,7 +48,25 @@ const Signup = ({ setUser }) => {
         }
 
         setInvalidFields(validations);
-    }
+    };
+    
+    const handleSubmit = async event => {
+        event.preventDefault();
+
+        if (isFormInvalid()) return;
+        setIsSubmitting(true);
+
+        try {
+            const newUser = await authService.signup(formData);
+            setUser(newUser);
+            navigate('/');
+        } catch (error) {
+            // This catches amy error that could come from authService
+            setErrorMessage(error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     useEffect(isFormInvalid, [formData]);
 
