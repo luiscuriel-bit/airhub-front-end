@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-//import { UserContext } from '../../../context/UserContext';
+import { UserContext } from '../../../context/UserContext';
 import { getFlights } from '../../../services/flightService';
 
 const FlightWidget = () => {

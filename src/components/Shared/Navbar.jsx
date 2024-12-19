@@ -8,7 +8,8 @@ const Navbar = () => {
             <ul style={{ listStyle: 'none', display: 'flex', gap: '1rem' }}>
                 <li><Link to="/">Home</Link></li>
                 <li><Link to="/dashboard">Dashboard</Link></li>
-                <li><Link to="/login">Login</Link></li>
+                <Link to="/auth/signin">Sign In</Link>
+                <Link to="/auth/signup">Sign Up</Link>
             </ul>
         </nav>
     );

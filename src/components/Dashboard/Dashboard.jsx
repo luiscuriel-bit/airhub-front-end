@@ -12,7 +12,7 @@ const Dashboard = () => {
                 </div>
                 <div>
                     <h2>Previous Flights</h2>
-                    <p>Display available flights here...</p>
+                    <p>Display previous flights here...</p>
                 </div>
             </div>
         </div>
