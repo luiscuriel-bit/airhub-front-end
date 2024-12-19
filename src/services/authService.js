@@ -46,7 +46,7 @@ const signin = async (formData) => {
         }
     } catch (error) {
         console.error('Error during signin:', error);
-        throw error;
+        throw error; // This will throw the error to the component
     }
 };
 
@@ -54,4 +54,11 @@ const signout = () => {
     localStorage.removeItem('token');
 };
 
-export { signup, signin, signout };
+const getUser = () => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    const user = JSON.parse(atob(token.split('.')[1]));
+    return user;
+}
+
+export { signup, signin, signout, getUser };
