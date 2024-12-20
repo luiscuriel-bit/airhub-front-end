@@ -2,7 +2,12 @@ const BASE_URL = `${import.meta.env.VITE_BACKEND_SERVER_URL}/flights`;
 
 const getAllFlights = async () => {
     try {
-        const res = await fetch(`${BASE_URL}/`);
+        const res = await fetch(`${BASE_URL}/`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+
         const json = await res.json();
 
         if (!res.ok) {
@@ -17,7 +22,12 @@ const getAllFlights = async () => {
 
 const getFlightById = async (flightId) => {
     try {
-        const res = await fetch(`${BASE_URL}/${flightId}`);
+        const res = await fetch(`${BASE_URL}/${flightId}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+
         const json = await res.json();
 
         if (!res.ok) {
@@ -34,7 +44,10 @@ const createFlight = async (formData) => {
     try {
         const res = await fetch(`${BASE_URL}/`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(formData),
         });
 
@@ -50,11 +63,14 @@ const createFlight = async (formData) => {
     }
 };
 
-const updateFlight = async (formData, flightId) => {
+const updateFlight = async (flightId, formData) => {
     try {
         const res = await fetch(`${BASE_URL}/${flightId}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(formData),
         });
 
@@ -74,6 +90,9 @@ const deleteFlight = async (flightId) => {
     try {
         const res = await fetch(`${BASE_URL}/${flightId}`, {
             method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
         });
 
         const json = await res.json();

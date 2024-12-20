@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthedUserContext } from '../../App';
 import * as bookingService from '../../services/bookingService';
 import * as flightService from '../../services/flightService';
 
 const Dashboard = () => {
-    const { user, token } = useContext(AuthedUserContext);
+    const { user } = useContext(AuthedUserContext);
     const navigate = useNavigate();
     const [flights, setFlights] = useState([]);
     const [selectedFlight, setSelectedFlight] = useState(null);
@@ -15,13 +15,18 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+<<<<<<< HEAD
         if (!user || !token) {
+=======
+        // Redirect to sign-in if no user or token is available
+        if (!user) {
+>>>>>>> main
             navigate('/auth/signin');
             return;
         }
 
         bookingService
-            .getAllBookings(token)
+            .getAllBookings()
             .then(data => {
                 setBookings(data);
                 setLoading(false);
@@ -30,6 +35,7 @@ const Dashboard = () => {
                 setError(err.message);
                 setLoading(false);
             });
+<<<<<<< HEAD
 
         flightService
             .getAllFlights()
@@ -87,6 +93,11 @@ const Dashboard = () => {
     
 
     if (!user || !token) return <p>Redirecting to sign-in...</p>;
+=======
+    }, [user, navigate]);
+
+    if (!user) return <p>Redirecting to sign-in...</p>;
+>>>>>>> main
 
     return (
         <div style={{ padding: '2rem' }}>

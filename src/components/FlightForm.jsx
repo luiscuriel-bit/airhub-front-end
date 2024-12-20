@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import * as flightService from '../services/flightService'
 
 
 const FlightForm = ({ initialData = {}, buttonText }) => {
     const navigate = useNavigate();
 
-    const currentDate = new Date().toISOString().slice(0, 16);
+    const getTimeInputString = (date = new Date()) => date
+        .toLocaleString('en-CA', { hour12: false, })
+        .replace(',', '')
+        .replace(' ', 'T')
+        .slice(0, 16);
 
-    useEffect(() => {
-        if (initialData.departureTime && initialData.arrivalTime) {
-            initialData.departureTime = initialData.departureTime.toLocaleString('en-US', { hour12: true, }).replace(',', '').replace(' ', 'T').slice(0, 16);
-            initialData.arrivalTime = initialData.arrivalTime.toLocaleString('en-US', { hour12: true, }).replace(',', '').replace(' ', 'T').slice(0, 16);
-        }
-    }, [])
+    if (!Object.keys(initialData).length) {
+        initialData.departureTime = getTimeInputString(initialData.departureTime);
+        initialData.arrivalTime = getTimeInputString(initialData.arrivalTime);
+    }
 
     const [isSubmitting, setIsSubmitting] = useState(false); // This is to know when a form is already being submitted
     const [errorMessage, setErrorMessage] = useState('');
@@ -20,67 +23,73 @@ const FlightForm = ({ initialData = {}, buttonText }) => {
     const [touchedFields, setTouchedFields] = useState({}); // Tracks the fields in the form that have been interacted with
     const [formData, setFormData] = useState(initialData);
 
-    const handleChange = event => setFormData({ ...formData, [event.target.name]: event.target.value });
+    const handleChange = event => {
+        console.log(formData)
+        setFormData({ ...formData, [event.target.name]: event.target.value });
+    }
     const handleBlur = event => setTouchedFields({ ...touchedFields, [event.target.name]: true });
 
     const isFormInvalid = () => {
-        const validations = {};
+        if (Object.keys(formData).length) {
+            const validations = {};
 
-        if (!formData.flightNumber.trim()) {
-            validations.flightNumber = 'Flight Number is required';
+            if (!formData.flightNumber?.trim()) {
+                validations.flightNumber = 'Flight Number is required';
+            }
+
+            if (!formData.origin?.trim()) {
+                validations.origin = 'Origin is required';
+            }
+
+            if (!formData.destination?.trim()) {
+                validations.destination = 'Destination is required';
+            }
+
+            if (!formData.departureTime?.trim()) {
+                validations.departureTime = 'Departure time is required';
+            } else if (formData.departureTime && new Date(formData.departureTime) < new Date()) {
+                validations.departureTime = 'Departure time cannot be in the past';
+            }
+
+            if (!formData.arrivalTime?.trim()) {
+                validations.arrivalTime = 'Arrival time is required';
+            } else if (formData.arrivalTime && new Date(formData.arrivalTime) < new Date(formData.departureTime)) {
+                validations.arrivalTime = 'Arrival time must be later than departure time';
+            }
+
+            if (!formData.availableSeats) {
+                validations.availableSeats = 'Available seats are required';
+            }
+
+            if (!formData.price) {
+                validations.price = 'Price is required';
+            }
+
+            setInvalidFields(validations);
         }
-
-        if (!formData.origin.trim()) {
-            validations.origin = 'Origin is required';
-        }
-
-        if (!formData.destination.trim()) {
-            validations.destination = 'Destination is required';
-        }
-
-        if (!formData.departureTime.trim()) {
-            validations.departureTime = 'Departure time is required';
-        } else if (new Date(formData.departureTime) < new Date()) {
-            validations.departureTime = 'Departure time cannot be in the past';
-        }
-
-        if (!formData.arrivalTime.trim()) {
-            validations.arrivalTime = 'Arrival time is required';
-        } else if (new Date(formData.arrivalTime) < new Date(formData.departureTime)) {
-            validations.arrivalTime = 'Arrival time must be later than departure time';
-        }
-
-        if (!formData.availableSeats) {
-            validations.availableSeats = 'Available seats are required';
-        }
-
-        if (!formData.price) {
-            validations.price = 'Price is required';
-        }
-
-        setInvalidFields(validations);
     };
 
     const handleSubmit = async event => {
         event.preventDefault();
 
-        if (isFormInvalid()) return;
+        if (Object.keys(invalidFields).length) return;
         setIsSubmitting(true);
 
-        formData.departureTime = new Date(formData.departureTime).toUTCString();
-        formData.arrivalTime = new Date(formData.arrivalTime).toUTCString();
+        formData.departureTime = new Date(formData.departureTime);
+        formData.arrivalTime = new Date(formData.arrivalTime);
 
         try {
-            // const newFlight = await ;
-
-            navigate('/');
+            await flightService.createFlight(formData);
+            navigate('/flights');
         } catch (error) {
-            // This catches amy error that could come from authService
+            // This catches amy error that could come from flightService
             setErrorMessage(error.message);
         } finally {
             setIsSubmitting(false);
         }
     };
+
+    useEffect(isFormInvalid, [formData]);
 
     return (
         <form onSubmit={handleSubmit}>
@@ -138,7 +147,7 @@ const FlightForm = ({ initialData = {}, buttonText }) => {
                     type='datetime-local'
                     id='departureTime'
                     name='departureTime'
-                    value={formData.departureTime || currentDate}
+                    value={formData.departureTime}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     aria-describedby='departureTime-error'
@@ -154,7 +163,7 @@ const FlightForm = ({ initialData = {}, buttonText }) => {
                     type='datetime-local'
                     id='arrivalTime'
                     name='arrivalTime'
-                    value={formData.arrivalTime || currentDate}
+                    value={formData.arrivalTime}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     aria-describedby='arrivalTime-error'
@@ -223,4 +232,4 @@ const FlightForm = ({ initialData = {}, buttonText }) => {
     );
 };
 
-export default FlightForm;
+export { FlightForm };
