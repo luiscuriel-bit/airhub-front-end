@@ -1,15 +1,10 @@
 const BASE_URL = `${import.meta.env.VITE_BACKEND_SERVER_URL}/bookings`;
 
-/**
- * Fetch all bookings
- * @param {string} token - JWT token for authentication
- * @returns {Promise<Array>} - List of bookings
- */
-const getAllBookings = async (token) => {
+const getAllBookings = async () => {
     try {
         const res = await fetch(BASE_URL, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
         });
 
@@ -25,17 +20,11 @@ const getAllBookings = async (token) => {
     }
 };
 
-/**
- * Fetch a single booking by ID
- * @param {string} bookingId - ID of the booking
- * @param {string} token - JWT token for authentication
- * @returns {Promise<Object>} - Booking details
- */
-const getBookingById = async (bookingId, token) => {
+const getBookingById = async (bookingId) => {
     try {
         const res = await fetch(`${BASE_URL}/${bookingId}`, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
         });
 
@@ -51,21 +40,15 @@ const getBookingById = async (bookingId, token) => {
     }
 };
 
-/**
- * Create a new booking
- * @param {Object} bookingData - Booking data (flight, passenger, seatNumber)
- * @param {string} token - JWT token for authentication
- * @returns {Promise<Object>} - Created booking
- */
-const createBooking = async (bookingData, token) => {
+const createBooking = async (formData) => {
     try {
         const res = await fetch(BASE_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
-            body: JSON.stringify(bookingData),
+            body: JSON.stringify(formData),
         });
 
         if (!res.ok) {
@@ -80,22 +63,15 @@ const createBooking = async (bookingData, token) => {
     }
 };
 
-/**
- * Update an existing booking
- * @param {string} bookingId - ID of the booking
- * @param {Object} updateData - Data to update (seatNumber, flight, status)
- * @param {string} token - JWT token for authentication
- * @returns {Promise<Object>} - Updated booking
- */
-const updateBooking = async (bookingId, updateData, token) => {
+const updateBooking = async (bookingId, formData) => {
     try {
         const res = await fetch(`${BASE_URL}/${bookingId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
-            body: JSON.stringify(updateData),
+            body: JSON.stringify(formData),
         });
 
         if (!res.ok) {
@@ -110,18 +86,12 @@ const updateBooking = async (bookingId, updateData, token) => {
     }
 };
 
-/**
- * Delete a booking
- * @param {string} bookingId - ID of the booking
- * @param {string} token - JWT token for authentication
- * @returns {Promise<Object>} - Success message
- */
-const deleteBooking = async (bookingId, token) => {
+const deleteBooking = async (bookingId) => {
     try {
         const res = await fetch(`${BASE_URL}/${bookingId}`, {
             method: 'DELETE',
             headers: {
-                Authorization: `Bearer ${token}`,
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
         });
 
@@ -137,4 +107,10 @@ const deleteBooking = async (bookingId, token) => {
     }
 };
 
-export { getAllBookings, getBookingById, createBooking, updateBooking, deleteBooking };
+export {
+    getAllBookings,
+    getBookingById,
+    createBooking,
+    updateBooking,
+    deleteBooking
+};

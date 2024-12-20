@@ -5,28 +5,57 @@ import * as authService from '../../services/authService';
 const Signup = ({ setUser }) => {
     const navigate = useNavigate();
 
-    const initialState = {
-        username: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        passwordConfirmation: '',
-    };
-
     const [isSubmitting, setIsSubmitting] = useState(false); // This is to know when a form is already being submitted
     const [errorMessage, setErrorMessage] = useState('');
     const [invalidFields, setInvalidFields] = useState({});
     const [touchedFields, setTouchedFields] = useState({}); // Tracks the fields in the form that have been interacted with
-    const [formData, setFormData] = useState(initialState);
+    const [formData, setFormData] = useState({});
 
     const handleChange = event => setFormData({ ...formData, [event.target.name]: event.target.value });
     const handleBlur = event => setTouchedFields({ ...touchedFields, [event.target.name]: true });
 
+    const isFormInvalid = () => {
+        if (Object.keys(formData).length) {
+            const validations = {};
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!formData.firstName?.trim()) {
+                validations.firstName = 'First Name is required';
+            }
+
+            if (!formData.lastName?.trim()) {
+                validations.lastName = 'Last Name is required';
+            }
+
+            if (!formData.username?.trim()) {
+                validations.username = 'Username is required';
+            }
+
+            if (!formData.email?.trim()) {
+                validations.email = 'Email is required';
+            }
+            else if (formData.email && !emailRegex.test(formData.email)) {
+                validations.email = 'Enter a valid email address';
+            }
+
+            if (!formData.password) {
+                validations.password = 'Password is required';
+            } else if (formData.password.length < 6) {
+                validations.password = 'Password must be at least 6 characters';
+            }
+
+            if (formData.passwordConfirmation && formData.password && formData.passwordConfirmation !== formData.password) {
+                validations.passwordConfirmation = 'Passwords must match';
+            }
+
+            setInvalidFields(validations);
+        }
+    };
+
     const handleSubmit = async event => {
         event.preventDefault();
 
-        if (isFormInvalid()) return;
+        if (Object.keys(invalidFields).length) return;
         setIsSubmitting(true);
 
         try {
@@ -40,42 +69,6 @@ const Signup = ({ setUser }) => {
             setIsSubmitting(false);
         }
     };
-
-    const isFormInvalid = () => {
-        const validations = {};
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!formData.firstName.trim()) {
-            validations.firstName = 'First Name is required';
-        }
-
-        if (!formData.lastName.trim()) {
-            validations.lastName = 'Last Name is required';
-        }
-
-        if (!formData.username.trim()) {
-            validations.username = 'Username is required';
-        }
-
-        if (!formData.email.trim()) {
-            validations.email = 'Email is required';
-        }
-        else if (!emailRegex.test(formData.email)) {
-            validations.email = 'Enter a valid email address';
-        }
-
-        if (!formData.password) {
-            validations.password = 'Password is required';
-        } else if (formData.password.length < 6) {
-            validations.password = 'Password must be at least 6 characters';
-        }
-
-        if (formData.passwordConfirmation !== formData.password) {
-            validations.passwordConfirmation = 'Passwords must match';
-        }
-
-        setInvalidFields(validations);
-    }
 
     useEffect(isFormInvalid, [formData]);
 

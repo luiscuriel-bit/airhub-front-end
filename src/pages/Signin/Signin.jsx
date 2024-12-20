@@ -5,24 +5,35 @@ import * as authService from '../../services/authService';
 const Signin = ({ setUser }) => {
     const navigate = useNavigate();
 
-    const initialState = {
-        username: '',
-        password: '',
-    };
-
     const [isSubmitting, setIsSubmitting] = useState(false); // This is to know when a form is already being submitted
     const [errorMessage, setErrorMessage] = useState('');
     const [invalidFields, setInvalidFields] = useState({});
     const [touchedFields, setTouchedFields] = useState({}); // Tracks the fields in the form that have been interacted with
-    const [formData, setFormData] = useState(initialState);
+    const [formData, setFormData] = useState({});
 
     const handleChange = event => setFormData({ ...formData, [event.target.name]: event.target.value });
     const handleBlur = event => setTouchedFields({ ...touchedFields, [event.target.name]: true });
 
+    const isFormInvalid = () => {
+        if (Object.keys(formData).length) {
+            const validations = {};
+
+            if (!formData.username?.trim()) {
+                validations.username = 'Username is required';
+            }
+
+            if (!formData.password) {
+                validations.password = 'Password is required';
+            }
+
+            setInvalidFields(validations);
+        }
+    };
+
     const handleSubmit = async event => {
         event.preventDefault();
 
-        if (isFormInvalid()) return;
+        if (Object.keys(invalidFields).length) return;
         setIsSubmitting(true);
 
         try {
@@ -36,20 +47,6 @@ const Signin = ({ setUser }) => {
             setIsSubmitting(false);
         }
     };
-
-    const isFormInvalid = () => {
-        const validations = {};
-
-        if (!formData.username.trim()) {
-            validations.username = 'Username is required';
-        }
-
-        if (!formData.password) {
-            validations.password = 'Password is required';
-        }
-
-        setInvalidFields(validations);
-    }
 
     useEffect(isFormInvalid, [formData]);
 
