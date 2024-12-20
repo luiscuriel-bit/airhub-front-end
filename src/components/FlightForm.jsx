@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+
 const FlightForm = ({ initialData = {}, buttonText }) => {
     const navigate = useNavigate();
 

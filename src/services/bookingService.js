@@ -135,6 +135,8 @@ const deleteBooking = async (bookingId, token) => {
         console.error(`Error deleting booking with ID ${bookingId}:`, error.message);
         throw error;
     }
+
+    
 };
 
 export { getAllBookings, getBookingById, createBooking, updateBooking, deleteBooking };
