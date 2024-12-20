@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthedUserContext } from '../App';
 import * as bookingService from '../services/bookingService';
 
 const Dashboard = () => {
-    const { user, token } = useContext(AuthedUserContext);
+    const { user } = useContext(AuthedUserContext);
     const navigate = useNavigate();
     const [bookings, setBookings] = useState([]);
     const [error, setError] = useState('');
@@ -12,14 +12,14 @@ const Dashboard = () => {
 
     useEffect(() => {
         // Redirect to sign-in if no user or token is available
-        if (!user || !token) {
+        if (!user) {
             navigate('/auth/signin');
             return;
         }
 
         // Fetch user bookings
         bookingService
-            .getAllBookings(token)
+            .getAllBookings()
             .then(data => {
                 setBookings(data);
                 setLoading(false);
@@ -28,9 +28,9 @@ const Dashboard = () => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [user, token, navigate]);
+    }, [user, navigate]);
 
-    if (!user || !token) return <p>Redirecting to sign-in...</p>;
+    if (!user) return <p>Redirecting to sign-in...</p>;
 
     return (
         <div style={{ padding: '2rem' }}>

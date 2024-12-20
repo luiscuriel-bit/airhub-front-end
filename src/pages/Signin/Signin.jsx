@@ -15,17 +15,19 @@ const Signin = ({ setUser }) => {
     const handleBlur = event => setTouchedFields({ ...touchedFields, [event.target.name]: true });
 
     const isFormInvalid = () => {
-        const validations = {};
+        if (Object.keys(formData).length) {
+            const validations = {};
 
-        if (!formData.username?.trim()) {
-            validations.username = 'Username is required';
+            if (!formData.username?.trim()) {
+                validations.username = 'Username is required';
+            }
+
+            if (!formData.password) {
+                validations.password = 'Password is required';
+            }
+
+            setInvalidFields(validations);
         }
-
-        if (!formData.password) {
-            validations.password = 'Password is required';
-        }
-
-        setInvalidFields(validations);
     };
 
     const handleSubmit = async event => {

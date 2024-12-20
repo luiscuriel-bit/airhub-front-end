@@ -15,39 +15,41 @@ const Signup = ({ setUser }) => {
     const handleBlur = event => setTouchedFields({ ...touchedFields, [event.target.name]: true });
 
     const isFormInvalid = () => {
-        const validations = {};
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (Object.keys(formData).length) {
+            const validations = {};
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (!formData.firstName?.trim()) {
-            validations.firstName = 'First Name is required';
-        }
+            if (!formData.firstName?.trim()) {
+                validations.firstName = 'First Name is required';
+            }
 
-        if (!formData.lastName?.trim()) {
-            validations.lastName = 'Last Name is required';
-        }
+            if (!formData.lastName?.trim()) {
+                validations.lastName = 'Last Name is required';
+            }
 
-        if (!formData.username?.trim()) {
-            validations.username = 'Username is required';
-        }
+            if (!formData.username?.trim()) {
+                validations.username = 'Username is required';
+            }
 
-        if (!formData.email?.trim()) {
-            validations.email = 'Email is required';
-        }
-        else if (formData.email && !emailRegex.test(formData.email)) {
-            validations.email = 'Enter a valid email address';
-        }
+            if (!formData.email?.trim()) {
+                validations.email = 'Email is required';
+            }
+            else if (formData.email && !emailRegex.test(formData.email)) {
+                validations.email = 'Enter a valid email address';
+            }
 
-        if (!formData.password) {
-            validations.password = 'Password is required';
-        } else if (formData.password.length < 6) {
-            validations.password = 'Password must be at least 6 characters';
-        }
+            if (!formData.password) {
+                validations.password = 'Password is required';
+            } else if (formData.password.length < 6) {
+                validations.password = 'Password must be at least 6 characters';
+            }
 
-        if (formData.passwordConfirmation && formData.password && formData.passwordConfirmation !== formData.password) {
-            validations.passwordConfirmation = 'Passwords must match';
-        }
+            if (formData.passwordConfirmation && formData.password && formData.passwordConfirmation !== formData.password) {
+                validations.passwordConfirmation = 'Passwords must match';
+            }
 
-        setInvalidFields(validations);
+            setInvalidFields(validations);
+        }
     };
 
     const handleSubmit = async event => {
