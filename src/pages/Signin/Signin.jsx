@@ -17,7 +17,7 @@ const Signin = ({ setUser }) => {
     const isFormInvalid = () => {
         const validations = {};
 
-        if (!formData.username.trim()) {
+        if (!formData.username?.trim()) {
             validations.username = 'Username is required';
         }
 
@@ -31,7 +31,7 @@ const Signin = ({ setUser }) => {
     const handleSubmit = async event => {
         event.preventDefault();
 
-        if (isFormInvalid()) return;
+        if (Object.keys(invalidFields).length) return;
         setIsSubmitting(true);
 
         try {

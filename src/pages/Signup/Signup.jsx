@@ -13,27 +13,27 @@ const Signup = ({ setUser }) => {
 
     const handleChange = event => setFormData({ ...formData, [event.target.name]: event.target.value });
     const handleBlur = event => setTouchedFields({ ...touchedFields, [event.target.name]: true });
-    
+
     const isFormInvalid = () => {
         const validations = {};
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (!formData.firstName.trim()) {
+        if (!formData.firstName?.trim()) {
             validations.firstName = 'First Name is required';
         }
 
-        if (!formData.lastName.trim()) {
+        if (!formData.lastName?.trim()) {
             validations.lastName = 'Last Name is required';
         }
 
-        if (!formData.username.trim()) {
+        if (!formData.username?.trim()) {
             validations.username = 'Username is required';
         }
 
-        if (!formData.email.trim()) {
+        if (!formData.email?.trim()) {
             validations.email = 'Email is required';
         }
-        else if (!emailRegex.test(formData.email)) {
+        else if (formData.email && !emailRegex.test(formData.email)) {
             validations.email = 'Enter a valid email address';
         }
 
@@ -43,17 +43,17 @@ const Signup = ({ setUser }) => {
             validations.password = 'Password must be at least 6 characters';
         }
 
-        if (formData.passwordConfirmation !== formData.password) {
+        if (formData.passwordConfirmation && formData.password && formData.passwordConfirmation !== formData.password) {
             validations.passwordConfirmation = 'Passwords must match';
         }
 
         setInvalidFields(validations);
     };
-    
+
     const handleSubmit = async event => {
         event.preventDefault();
 
-        if (isFormInvalid()) return;
+        if (Object.keys(invalidFields).length) return;
         setIsSubmitting(true);
 
         try {
