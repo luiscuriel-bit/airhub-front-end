@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as flightService from '../services/flightService'
 
+
 const FlightForm = ({ initialData = {}, buttonText }) => {
     const navigate = useNavigate();
 
