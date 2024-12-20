@@ -15,12 +15,8 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-<<<<<<< HEAD
-        if (!user || !token) {
-=======
         // Redirect to sign-in if no user or token is available
         if (!user) {
->>>>>>> main
             navigate('/auth/signin');
             return;
         }
@@ -35,7 +31,6 @@ const Dashboard = () => {
                 setError(err.message);
                 setLoading(false);
             });
-<<<<<<< HEAD
 
         flightService
             .getAllFlights()
@@ -47,11 +42,11 @@ const Dashboard = () => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [user, token, navigate]);
+    }, [user, navigate]);
 
     const handleViewDetails = (bookingId) => {
         bookingService
-            .getBookingById(bookingId, token)
+            .getBookingById(bookingId)
             .then(data => setSelectedBooking(data))
             .catch(err => setError(err.message));
     };
@@ -60,7 +55,7 @@ const Dashboard = () => {
         if (!window.confirm('Are you sure you want to delete this booking?')) return;
 
         bookingService
-            .deleteBooking(bookingId, token)
+            .deleteBooking(bookingId)
             .then(() => {
                 setBookings(bookings.filter(booking => booking.id !== bookingId));
             })
@@ -87,17 +82,12 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (selectedBooking && !bookings.some(booking => booking.id === selectedBooking.id)) {
-            setSelectedBooking(null); // Clear the selected booking if it's deleted
+            setSelectedBooking(null); 
         }
     }, [bookings, selectedBooking]);
     
 
-    if (!user || !token) return <p>Redirecting to sign-in...</p>;
-=======
-    }, [user, navigate]);
-
     if (!user) return <p>Redirecting to sign-in...</p>;
->>>>>>> main
 
     return (
         <div style={{ padding: '2rem' }}>
@@ -180,6 +170,6 @@ const Dashboard = () => {
             </div>
         </div>
     );
-};
 
+}
 export default Dashboard;
