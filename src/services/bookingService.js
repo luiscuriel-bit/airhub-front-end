@@ -105,8 +105,6 @@ const deleteBooking = async (bookingId) => {
         console.error(`Error deleting booking with ID ${bookingId}:`, error.message);
         throw error;
     }
-
-
 };
 
 export {

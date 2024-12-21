@@ -9,12 +9,6 @@ const ManageBookings = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!user) {
-            setErrorMessage('You must be logged in to view your bookings.');
-            setLoading(false);
-            return;
-        }
-
         bookingService
             .getAllBookings()
             .then(data => {
@@ -25,11 +19,9 @@ const ManageBookings = () => {
                 setErrorMessage(err.message);
                 setLoading(false);
             });
-    }, [user]);
+    }, []);
 
     const handleDeleteBooking = (bookingId) => {
-        if (!window.confirm('Are you sure you want to delete this booking?')) return;
-
         bookingService
             .deleteBooking(bookingId) // Use the deleteBooking service
             .then(() => {
