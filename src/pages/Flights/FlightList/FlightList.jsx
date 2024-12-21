@@ -22,33 +22,56 @@ const FlightList = () => {
         fetchFlights();
     }, []);
 
+    const formatDateTime = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+    };
+
     if (isLoading) {
         return <p>Loading flights...</p>;
     }
 
-    if (errorMessage) {
-        return <p>{errorMessage}</p>;
-    }
 
     if (!flights.length) {
         return <p>No flights available at the moment.</p>;
     }
 
     return (
-        <div>
-            <h1>All Flights</h1>
-            <ul>
-                {flights.map(flight => (
-                    <li key={flight._id}>
-                        <p><strong>Flight Number:</strong> {flight.flightNumber}</p>
-                        <p><strong>Origin:</strong> {flight.origin}</p>
-                        <p><strong>Destination:</strong> {flight.destination}</p>
-                        <p><strong>Departure Time:</strong> {new Date(flight.departureTime).toLocaleString()}</p>
-                        <p><strong>Available Seats:</strong> {flight.availableSeats}</p>
-                        <Link to={`/flights/${flight._id}`}>View Details</Link>
-                    </li>
-                ))}
-            </ul>
+        <div className="container my-4">
+            <h1 className="text-center mb-4">All Flights</h1>
+            {errorMessage && (
+                <div className="alert alert-danger text-center" role="alert">
+                    {errorMessage}
+                </div>
+            )}
+            <table className="table table-hover">
+                <thead className="table-dark">
+                    <tr>
+                        <th scope="col">Flight Number</th>
+                        <th scope="col">Origin</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Departure Time</th>
+                        <th scope="col">Available Seats</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {flights.map(flight => (
+                        <tr key={flight._id}>
+                            <td>{flight.flightNumber}</td>
+                            <td>{flight.origin}</td>
+                            <td>{flight.destination}</td>
+                            <td>{formatDateTime(flight.departureTime)}</td>
+                            <td>{flight.availableSeats}</td>
+                            <td>
+                                <Link to={`/flights/${flight._id}`} className="btn btn-primary btn-sm">
+                                    View Details
+                                </Link>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };
