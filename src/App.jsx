@@ -12,6 +12,7 @@ import FlightList from './pages/Flights/FlightList/FlightList';
 import NewFlight from './pages/Flights/NewFlight/NewFlight';
 import EditFlight from './pages/Flights/EditFlight/EditFlight';
 import ShowFlight from './pages/Flights/ShowFlight/ShowFlight';
+import SearchFlight from './components/SearchFlight/SearchFlight';
 
 
 export const AuthedUserContext = createContext(null); // Set the initial value of the context to null
@@ -26,21 +27,36 @@ const App = () => {
 
   return (
     <AuthedUserContext.Provider value={{ user }}>
-     <nav>
+      <nav>
         <Link to="/">Home</Link>
+        <div>
+          <SearchFlight />
+        </div>
         {!user && (
           <>
-            <Link to="/auth/signin">Sign In</Link>
-            <Link to="/auth/signup">Sign Up</Link>
+            <div>
+              <Link to="/auth/signin">Sign In</Link>
+            </div>
+            <div>
+              <Link to="/auth/signup">Sign Up</Link>
+            </div>
           </>
         )}
         {user && (
           <>
             <button onClick={handleSignout}>Sign Out</button>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/bookings">Bookings</Link>
-            <Link to="/profile">Profile</Link>
-            <Link to="/flights/new">Create Flight</Link>
+            <div>
+              <Link to="/dashboard">Dashboard</Link>
+            </div>
+            <div>
+              <Link to="/bookings">Bookings</Link>
+            </div>
+            <div>
+              <Link to="/profile">Profile</Link>
+            </div>
+            <div>
+              <Link to="/flights/new">Create Flight</Link>
+            </div>
           </>
         )}
       </nav>

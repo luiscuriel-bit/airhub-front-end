@@ -73,13 +73,12 @@ const FlightForm = ({ flightId = null, initialData = {}, buttonText }) => {
 
         if (Object.keys(invalidFields).length) return;
         setIsSubmitting(true);
-
         formData.departureTime = new Date(formData.departureTime);
         formData.arrivalTime = new Date(formData.arrivalTime);
 
         try {
             if (buttonText === 'Create Flight')
-               flightId = await flightService.createFlight(formData);
+                flightId = (await flightService.createFlight(formData))._id;
             else
                 await flightService.updateFlight(flightId, formData);
             navigate(`/flights/${flightId}`);
@@ -149,7 +148,7 @@ const FlightForm = ({ flightId = null, initialData = {}, buttonText }) => {
                     type='datetime-local'
                     id='departureTime'
                     name='departureTime'
-                    value={formData.departureTime ||  getTimeInputString()}
+                    value={formData.departureTime || getTimeInputString()}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     aria-describedby='departureTime-error'
@@ -165,7 +164,7 @@ const FlightForm = ({ flightId = null, initialData = {}, buttonText }) => {
                     type='datetime-local'
                     id='arrivalTime'
                     name='arrivalTime'
-                    value={formData.arrivalTime ||  getTimeInputString()}
+                    value={formData.arrivalTime || getTimeInputString()}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     aria-describedby='arrivalTime-error'
