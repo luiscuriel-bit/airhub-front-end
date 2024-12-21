@@ -29,11 +29,9 @@ Below are the external resources and libraries used in the development of our ap
 
 - **React Router:** Used for front-end routing. [Documentation](https://reactrouter.com/)  
 - **Bootstrap:** CSS framework for responsive design and styling. [Documentation](https://getbootstrap.com/)  
-- **FontAwesome:** Icons used in the application. [Website](https://fontawesome.com/)  
+- **Google Fonts:** Fonts  used in the application. [Website](https://fonts.google.com/)  
 - **Mongoose:** For handling database operations in MongoDB. [Documentation](https://mongoosejs.com/)  
 - **Express.js:** Web framework for the back end. [Documentation](https://expressjs.com/)  
-- **Cloudinary:** For image hosting and management. [Website](https://cloudinary.com/)  
-
 ---
 
 ### **Technologies Used**  
