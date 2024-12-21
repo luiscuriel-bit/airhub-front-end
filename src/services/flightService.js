@@ -107,10 +107,34 @@ const deleteFlight = async (flightId) => {
     }
 };
 
+const searchFlight = async (formData) => {
+    try {
+        const res = await fetch(`${BASE_URL}/search`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData),
+        });
+
+        const json = await res.json();
+
+        if (!res.ok) {
+            throw new Error(json.message);
+        }
+        return json;
+    } catch (error) {
+        console.error(`Error searching flights`, error);
+        throw error;
+    }
+};
+
 export {
     getAllFlights,
     getFlightById,
     createFlight,
     updateFlight,
-    deleteFlight
+    deleteFlight,
+    searchFlight,
 };

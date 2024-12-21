@@ -106,7 +106,7 @@ const deleteBooking = async (bookingId) => {
         throw error;
     }
 
-    
+
 };
 
 export {
