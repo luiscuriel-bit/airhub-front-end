@@ -20,7 +20,7 @@
 ## **Getting Started**  
 
 ### **Important Links**  
-- **Deployed Application:** [AirHub Live App](https://airhub-us.netlify.app/dashboard)  
+- **Deployed Application:** [AirHub Live App](https://airhub-us.netlify.app)  
 - **Planning Materials:** [Planning Docs](https://trello.com/b/ooOv3kiE/airhub)  
 - **Back-End Repository:** [AirHub Back-End Repository](https://github.com/luiscuriel-bit/airhub-back-end)
 
