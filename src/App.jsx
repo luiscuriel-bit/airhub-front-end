@@ -68,6 +68,9 @@ const App = () => {
                   <li className="nav-item">
                     <Link className="nav-link" to="/flights/new">Create Flight</Link>
                   </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/flights">Show Flights</Link>
+                  </li>
                 </>
               ) : (
                 <>
@@ -82,9 +85,6 @@ const App = () => {
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/profile">Profile</Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/flights/new">Create Flight</Link>
                   </li>
                 </>
               )
