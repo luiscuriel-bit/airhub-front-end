@@ -4,7 +4,7 @@ import { AuthedUserContext } from '../../App';
 import * as authService from '../../services/authService'; // Update this if needed for your services
 
 const EditProfile = () => {
-	const { user, token } = useContext(AuthedUserContext);
+	const { user } = useContext(AuthedUserContext);
 	const [formData, setFormData] = useState({
 		username: '',
 		firstName: '',
@@ -47,7 +47,7 @@ const EditProfile = () => {
 		setError('');
 
 		try {
-			const updatedUser = await authService.updateUser(formData, token);
+			const updatedUser = await authService.updateUser(formData);
 			navigate('/profile'); // Redirect back to profile page after update
 		} catch (err) {
 			setError(err.message || 'Failed to update profile.');
@@ -63,7 +63,7 @@ const EditProfile = () => {
 		setPasswordError('');
 
 		try {
-			await authService.changePassword(passwordFormData, token);
+			await authService.changePassword(passwordFormData);
 			alert('Password changed successfully.');
 			setPasswordFormData({ oldPassword: '', newPassword: '' });
 		} catch (err) {
