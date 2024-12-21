@@ -13,17 +13,22 @@ import NewFlight from './pages/Flights/NewFlight/NewFlight';
 import EditFlight from './pages/Flights/EditFlight/EditFlight';
 import ShowFlight from './pages/Flights/ShowFlight/ShowFlight';
 import SearchFlight from './components/SearchFlight/SearchFlight';
+import ProfilePage from './pages/ProfilePage/ProfilePage'; // Import ProfilePage
+import EditProfile from './components/EditProfile'
 
 
-export const AuthedUserContext = createContext(null); // Set the initial value of the context to null
+export const AuthedUserContext = createContext({ user: null, token: null });
 
 const App = () => {
-  const [user, setUser] = useState(authService.getUser());
+    const [user, setUser] = useState(authService.getUser());
+    const [token, setToken] = useState(localStorage.getItem('token')); // Ensures revalidation for conditional rendering
 
-  const handleSignout = () => {
-    authService.signout();
-    setUser(null);
-  };
+    const handleSignout = () => {
+        authService.signout();
+        setUser(null);
+        setToken(null); // Clear the token state
+        localStorage.removeItem('token'); // Ensure the token is fully cleared
+    };
 
   return (
     <AuthedUserContext.Provider value={{ user }}>
@@ -70,6 +75,7 @@ const App = () => {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/flights" element={<FlightList />} />
         <Route path='/flights/new' element={<NewFlight />}></Route>
+        <Route path="/profile/edit" element={<EditProfile />} />
         <Route path='/flights/:flightId/edit' element={<EditFlight />}></Route>
         <Route path="/flights/:flightId" element={<ShowFlight />} />
       </Routes>

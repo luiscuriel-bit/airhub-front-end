@@ -27,36 +27,39 @@ const ManageBookings = () => {
             });
     }, [user]);
 
-    const handleDeleteBooking = (bookingId) => {
-        if (!window.confirm('Are you sure you want to delete this booking?')) return;
+  const handleDeleteBooking = (bookingId) => {
+    if (!window.confirm('Are you sure you want to delete this booking?')) return;
 
-        bookingService
-            .deleteBooking(bookingId)
-            .then(() => {
-                setBookings(bookings.filter(booking => booking.id !== bookingId));
-            })
-            .catch(err => setError(err.message));
-    };
+    bookingService
+      .deleteBooking(bookingId) // Use the deleteBooking service
+      .then(() => {
+        setBookings((prev) => prev.filter((booking) => booking._id !== bookingId));
+      })
+      .catch((err) => setError(err.message));
+  };
 
-    return (
-        <div style={{ padding: '2rem' }}>
-            <h1>Manage Your Bookings</h1>
-            {loading && <p>Loading bookings...</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {!loading && !error && bookings.length > 0 ? (
-                <ul>
-                    {bookings.map(booking => (
-                        <li key={booking.id}>
-                            <span>{booking.details}</span>
-                            <button onClick={() => handleDeleteBooking(booking.id)}>Delete</button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No bookings to display.</p>
-            )}
-        </div>
-    );
+  return (
+    <div style={{ padding: '2rem' }}>
+      <h1>Manage Your Bookings</h1>
+      {loading && <p>Loading bookings...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {!loading && !error && bookings.length > 0 ? (
+        <ul>
+          {bookings.map((booking) => (
+            <li key={booking._id}>
+              <span>
+                Flight: {booking.flight?.flightNumber} - Seat: {booking.seatNumber} - Status:{' '}
+                {booking.status}
+              </span>
+              <button onClick={() => handleDeleteBooking(booking._id)}>Delete</button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        !loading && <p>No bookings to display.</p>
+      )}
+    </div>
+  );
 };
 
 export default ManageBookings;
