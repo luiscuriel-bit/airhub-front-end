@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { FlightForm } from "../../../components/FlightForm"
+import { FlightForm } from '../../../components/FlightForm/FlightForm'
 import { useEffect, useState } from "react";
 import * as flightService from "../../../services/flightService";
 
@@ -21,17 +21,18 @@ const EditFlight = () => {
         fetchFlight();
     }, [flightId]);
 
-    if (errorMessage) {
-        return <div role="alert" className="error">{errorMessage}</div>;
-    }
-
     if (!flight) {
         return <div>Loading flight details...</div>;
     }
 
-    return (
+    return <>
+        {errorMessage && (
+            <div className="alert alert-danger text-center" role="alert">
+                {errorMessage}
+            </div>
+        )}
         <FlightForm flightId={flightId} initialData={flight} buttonText={'Edit Flight'} />
-    );
+    </>
 };
 
 export default EditFlight;

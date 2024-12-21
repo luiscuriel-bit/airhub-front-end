@@ -57,7 +57,7 @@ const signout = () => {
 const getUser = () => {
     const token = localStorage.getItem('token');
     if (!token) return null;
-    
+
     const user = JSON.parse(atob(token.split('.')[1]));
     return user;
 };
@@ -65,26 +65,26 @@ const getUser = () => {
 // new method needed for the edit profile form in the profile page.
 const updateUser = async (formData, token) => {
     try {
-      const res = await fetch(`${BASE_URL}/update`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-  
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'Failed to update user.');
-      }
-  
-      const updatedUser = await res.json();
-      return updatedUser; // Optionally, update context or local storage with this new data -ChatGPT for this line.
+        const res = await fetch(`${BASE_URL}/update`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(formData),
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message || 'Failed to update user.');
+        }
+
+        const updatedUser = await res.json();
+        return updatedUser; // Optionally, update context or local storage with this new data -ChatGPT for this line.
     } catch (error) {
-      console.error('Error updating user:', error.message);
-      throw error;
+        console.error('Error updating user:', error.message);
+        throw error;
     }
-  };
-  
-  export { signup, signin, signout, getUser, updateUser };
+};
+
+export { signup, signin, signout, getUser, updateUser };

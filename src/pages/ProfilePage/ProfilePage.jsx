@@ -3,37 +3,42 @@ import { useNavigate } from 'react-router-dom';
 import { AuthedUserContext } from '../../App';
 
 const ProfilePage = () => {
-  const { user } = useContext(AuthedUserContext);
-  const navigate = useNavigate(); // Allows navigation to the Edit Profile page
+    const { user } = useContext(AuthedUserContext);
+    const navigate = useNavigate(); // Allows navigation to the Edit Profile page
 
-  if (!user) {
-    return <p>You need to log in to view your profile.</p>;
-  }
+    return (
+        <div className="container my-4">
+            <div className="card shadow">
+                <div className="card-body">
+                    <h1 className="card-title text-center mb-4">Profile</h1>
+                    <p className="card-text text-center">Manage your account information here.</p>
 
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Profile</h1>
-      <p>Manage your account information here.</p>
-      <div style={{ marginTop: '2rem' }}>
-        <h2>Your Information</h2>
-        <p><strong>Username:</strong> {user.username}</p>
-        <p><strong>First Name:</strong> {user.firstName}</p>
-        <p><strong>Last Name:</strong> {user.lastName || 'Not available'}</p>
-        <p><strong>Email:</strong> {user.email || 'Not available'}</p>
-        <p><strong>Role:</strong> {user.role}</p>
-      </div>
-      <div style={{ marginTop: '2rem' }}>
-        <h2>Actions</h2>
-        {/* Redirects to the Edit Profile page */}
-        <button 
-          style={{ marginRight: '1rem' }}
-          onClick={() => navigate('/profile/edit')}
-        >
-          Edit Profile
-        </button>
-      </div>
-    </div>
-  );
+                    <hr />
+
+                    <div className="mt-4">
+                        <h2>Your Information</h2>
+                        <ul className="list-group list-group-flush">
+                            <li className="list-group-item"><strong>Username:</strong> {user.username}</li>
+                            <li className="list-group-item"><strong>First Name:</strong> {user.firstName}</li>
+                            <li className="list-group-item"><strong>Last Name:</strong> {user.lastName || 'Not available'}</li>
+                            <li className="list-group-item"><strong>Email:</strong> {user.email || 'Not available'}</li>
+                            <li className="list-group-item"><strong>Role:</strong> {user.role}</li>
+                        </ul>
+                    </div>
+
+                    <div className="mt-4 text-center">
+                        <h2>Actions</h2>
+                        <button
+                            className="btn btn-primary mt-3"
+                            onClick={() => navigate('/profile/edit')}
+                        >
+                            Edit Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default ProfilePage;
