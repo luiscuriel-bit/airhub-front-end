@@ -11,11 +11,8 @@ const EditProfile = () => {
 		lastName: '',
 		email: '',
 	});
-	const [passwordFormData, setPasswordFormData] = useState({ oldPassword: '', newPassword: '' });
 	const [error, setError] = useState('');
-	const [passwordError, setPasswordError] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [isPasswordSubmitting, setIsPasswordSubmitting] = useState(false);
 	const navigate = useNavigate();
 
 	// Prepopulate form with user data
@@ -35,10 +32,6 @@ const EditProfile = () => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	// Handle input changes for password form
-	const handlePasswordChange = (e) => {
-		setPasswordFormData({ ...passwordFormData, [e.target.name]: e.target.value });
-	};
 
 	// Handle profile update submission
 	const handleProfileSubmit = async (e) => {
@@ -54,22 +47,6 @@ const EditProfile = () => {
 		}
 	};
 
-	// Handle password change submission
-	const handlePasswordSubmit = async (e) => {
-		e.preventDefault();
-		setIsPasswordSubmitting(true);
-		setPasswordError('');
-
-		try {
-			await authService.changePassword(passwordFormData);
-			alert('Password changed successfully.');
-			setPasswordFormData({ oldPassword: '', newPassword: '' });
-		} catch (err) {
-			setPasswordError(err.message || 'Failed to change password.');
-		} finally {
-			setIsPasswordSubmitting(false);
-		}
-	};
 
 	if (!user) {
 		return <p>You need to log in to edit your profile.</p>;
@@ -135,37 +112,6 @@ const EditProfile = () => {
 				</button>
 			</form>
 
-			<h2 className="mt-5">Change Password</h2>
-			{passwordError && <p className="text-danger">{passwordError}</p>}
-			<form onSubmit={handlePasswordSubmit} className="mt-4">
-				<div className="mb-3">
-					<label htmlFor="oldPassword" className="form-label">Old Password</label>
-					<input
-						type="password"
-						id="oldPassword"
-						name="oldPassword"
-						className="form-control"
-						value={passwordFormData.oldPassword}
-						onChange={handlePasswordChange}
-						required
-					/>
-				</div>
-				<div className="mb-3">
-					<label htmlFor="newPassword" className="form-label">New Password</label>
-					<input
-						type="password"
-						id="newPassword"
-						name="newPassword"
-						className="form-control"
-						value={passwordFormData.newPassword}
-						onChange={handlePasswordChange}
-						required
-					/>
-				</div>
-				<button type="submit" className="btn btn-success" disabled={isPasswordSubmitting}>
-					{isPasswordSubmitting ? 'Saving...' : 'Change Password'}
-				</button>
-			</form>
 		</div>
 	);
 };
