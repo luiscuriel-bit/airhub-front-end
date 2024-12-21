@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import * as flightService from "../../../services/flightService";
+import { AuthedUserContext } from "../../../App";
 
 const ShowFlight = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { user } = useContext(AuthedUserContext);
     const { flightId } = useParams();
     const [flight, setFlight] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
@@ -71,14 +73,18 @@ const ShowFlight = () => {
                                 <p><strong>Staff:</strong> {flight.staff.length || 'No staff'}</p>
                             </div>
 
-                            {!flight.passengers.length ? (
+                            {user.role === 'admin' && !flight.passengers.length ? (
                                 <button onClick={handleDelete} className="btn btn-danger mb-3">Delete Flight</button>
                             ) : (
                                 <p className="text-muted">You cannot delete this flight because it has passengers.</p>
                             )}
 
                             <div className="d-flex justify-content-between">
-                                <Link to={`/flights/${flightId}/edit`} className="btn btn-warning">Edit</Link>
+                                {
+                                    user.role === 'admin' && (
+                                        <Link to={`/flights/${flightId}/edit`} className="btn btn-warning">Edit</Link>
+                                    )
+                                }
                                 <Link to="/flights" className="btn btn-secondary">Back to Flights</Link>
                             </div>
                         </div>

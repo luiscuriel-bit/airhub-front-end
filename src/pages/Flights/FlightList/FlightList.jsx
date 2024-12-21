@@ -6,7 +6,6 @@ const FlightList = () => {
     const [flights, setFlights] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-
     useEffect(() => {
         const fetchFlights = async () => {
             try {
@@ -30,7 +29,6 @@ const FlightList = () => {
     if (isLoading) {
         return <p>Loading flights...</p>;
     }
-
 
     if (!flights.length) {
         return <p>No flights available at the moment.</p>;
