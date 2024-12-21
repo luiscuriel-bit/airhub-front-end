@@ -100,4 +100,4 @@ const Signin = ({ setUser }) => {
     </>
 };
 
-export { Signin };
+export default Signin;
