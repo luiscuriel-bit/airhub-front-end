@@ -2,19 +2,20 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as flightService from '../services/flightService'
 
-
-const FlightForm = ({ initialData = {}, buttonText }) => {
+const FlightForm = ({ flightId = null, initialData = {}, buttonText }) => {
     const navigate = useNavigate();
 
-    const getTimeInputString = (date = new Date()) => date
-        .toLocaleString('en-CA', { hour12: false, })
-        .replace(',', '')
-        .replace(' ', 'T')
-        .slice(0, 16);
+    const getTimeInputString = (date = new Date()) => {
+        return date
+            .toLocaleString('en-CA', { hour12: false, })
+            .replace(',', '')
+            .replace(' ', 'T')
+            .slice(0, 16);
+    }
 
-    if (!Object.keys(initialData).length) {
-        initialData.departureTime = getTimeInputString(initialData.departureTime);
-        initialData.arrivalTime = getTimeInputString(initialData.arrivalTime);
+    if (Object.keys(initialData).length) {
+        initialData.departureTime = getTimeInputString(new Date(initialData.departureTime));
+        initialData.arrivalTime = getTimeInputString(new Date(initialData.arrivalTime));
     }
 
     const [isSubmitting, setIsSubmitting] = useState(false); // This is to know when a form is already being submitted
@@ -23,10 +24,8 @@ const FlightForm = ({ initialData = {}, buttonText }) => {
     const [touchedFields, setTouchedFields] = useState({}); // Tracks the fields in the form that have been interacted with
     const [formData, setFormData] = useState(initialData);
 
-    const handleChange = event => {
-        console.log(formData)
-        setFormData({ ...formData, [event.target.name]: event.target.value });
-    }
+    const handleChange = event => setFormData({ ...formData, [event.target.name]: event.target.value });
+
     const handleBlur = event => setTouchedFields({ ...touchedFields, [event.target.name]: true });
 
     const isFormInvalid = () => {
@@ -79,8 +78,11 @@ const FlightForm = ({ initialData = {}, buttonText }) => {
         formData.arrivalTime = new Date(formData.arrivalTime);
 
         try {
-            await flightService.createFlight(formData);
-            navigate('/flights');
+            if (buttonText === 'Create Flight')
+               flightId = await flightService.createFlight(formData);
+            else
+                await flightService.updateFlight(flightId, formData);
+            navigate(`/flights/${flightId}`);
         } catch (error) {
             // This catches amy error that could come from flightService
             setErrorMessage(error.message);
@@ -92,7 +94,7 @@ const FlightForm = ({ initialData = {}, buttonText }) => {
     useEffect(isFormInvalid, [formData]);
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="flight-form" onSubmit={handleSubmit}>
             <div>
                 <label htmlFor='flightNumber'>Flight Number</label>
                 <input
@@ -147,7 +149,7 @@ const FlightForm = ({ initialData = {}, buttonText }) => {
                     type='datetime-local'
                     id='departureTime'
                     name='departureTime'
-                    value={formData.departureTime}
+                    value={formData.departureTime ||  getTimeInputString()}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     aria-describedby='departureTime-error'
@@ -163,7 +165,7 @@ const FlightForm = ({ initialData = {}, buttonText }) => {
                     type='datetime-local'
                     id='arrivalTime'
                     name='arrivalTime'
-                    value={formData.arrivalTime}
+                    value={formData.arrivalTime ||  getTimeInputString()}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     aria-describedby='arrivalTime-error'

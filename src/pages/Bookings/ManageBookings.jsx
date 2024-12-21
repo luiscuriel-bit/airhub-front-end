@@ -1,22 +1,22 @@
-import React, { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { AuthedUserContext } from '../../App';
 import * as bookingService from '../../services/bookingService';
 
 const ManageBookings = () => {
-    const { user, token } = useContext(AuthedUserContext);
+    const { user } = useContext(AuthedUserContext);
     const [bookings, setBookings] = useState([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!token) {
+        if (!user) {
             setError('You must be logged in to view your bookings.');
             setLoading(false);
             return;
         }
 
         bookingService
-            .getAllBookings(token)
+            .getAllBookings()
             .then(data => {
                 setBookings(data);
                 setLoading(false);
@@ -25,13 +25,13 @@ const ManageBookings = () => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [token]);
+    }, [user]);
 
     const handleDeleteBooking = (bookingId) => {
         if (!window.confirm('Are you sure you want to delete this booking?')) return;
 
         bookingService
-            .deleteBooking(bookingId, token)
+            .deleteBooking(bookingId)
             .then(() => {
                 setBookings(bookings.filter(booking => booking.id !== bookingId));
             })
