@@ -33,7 +33,7 @@ const FlightForm = ({ flightId = null, initialData = {}, buttonText }) => {
                 element.focus();
             }
         }
-    }, [invalidFields]);
+    }, [touchedFields]);
 
     const handleChange = event => setFormData({ ...formData, [event.target.name]: event.target.value });
 

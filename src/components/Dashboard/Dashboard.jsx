@@ -1,11 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AuthedUserContext } from '../../App';
 import * as bookingService from '../../services/bookingService';
+import SearchFlight from '../SearchFlight/SearchFlight';
 
 const Dashboard = () => {
     const { user } = useContext(AuthedUserContext);
-    const navigate = useNavigate();
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -22,19 +21,20 @@ const Dashboard = () => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [user, navigate]);
+    }, []);
 
     const handleDeleteBooking = (bookingId) => {
         bookingService
             .deleteBooking(bookingId)
             .then(() => {
-                setBookings((prev) => prev.filter((booking) => booking.id !== bookingId));
+                setBookings((prev) => prev.filter((booking) => booking._id !== bookingId));
             })
             .catch((err) => setError(err.message));
     };
 
     return (
         <div className="container py-5">
+             <SearchFlight />
             <h1 className="display-4">Dashboard</h1>
             <p className="lead">Welcome back, {user.username}!</p>
 
@@ -45,14 +45,14 @@ const Dashboard = () => {
                 {!loading && !error && bookings.length > 0 ? (
                     <ul className="list-group">
                         {bookings.map((booking) => (
-                            <li key={booking.id} className="list-group-item d-flex justify-content-between align-items-center">
+                            <li key={booking._id} className="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <p><strong>Flight:</strong> {booking.flight?.flightNumber || 'N/A'}</p>
                                     <p><strong>Seat:</strong> {booking.seatNumber || 'N/A'}</p>
                                     <p><strong>Status:</strong> {booking.status || 'N/A'}</p>
                                 </div>
                                 <button
-                                    onClick={() => handleDeleteBooking(booking.id)}
+                                    onClick={() => handleDeleteBooking(booking._id)}
                                     className="btn btn-danger btn-sm"
                                 >
                                     Delete
