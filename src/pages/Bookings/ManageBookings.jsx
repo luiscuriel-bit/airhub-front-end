@@ -13,35 +13,27 @@ const ManageBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const entriesPerPage = 5;
 
-  useEffect(() => {
-    if (!user) {
-      setErrorMessage('You must be logged in to view your bookings.');
-      setLoading(false);
-      return;
-    }
+    useEffect(() => {
+        bookingService
+            .getAllBookings()
+            .then(data => {
+                setBookings(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                setErrorMessage(err.message);
+                setLoading(false);
+            });
+    }, []);
 
-    bookingService
-      .getAllBookings()
-      .then((data) => {
-        setBookings(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setErrorMessage(err.message);
-        setLoading(false);
-      });
-  }, [user]);
-
-  const handleDeleteBooking = (bookingId) => {
-    if (!window.confirm('Are you sure you want to delete this booking?')) return;
-
-    bookingService
-      .deleteBooking(bookingId)
-      .then(() => {
-        setBookings((prev) => prev.filter((booking) => booking._id !== bookingId));
-      })
-      .catch((err) => setErrorMessage(err.message));
-  };
+    const handleDeleteBooking = (bookingId) => {
+        bookingService
+            .deleteBooking(bookingId) // Use the deleteBooking service
+            .then(() => {
+                setBookings((prev) => prev.filter((booking) => booking._id !== bookingId));
+            })
+            .catch((err) => setErrorMessage(err.message));
+    };
 
 
   const startIndex = (currentPage - 1) * entriesPerPage;
@@ -95,7 +87,6 @@ const ManageBookings = () => {
             ))}
           </div>
 
-          {/* Pagination controls */}
           <nav>
             <ul className="pagination justify-content-center">
               <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>

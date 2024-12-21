@@ -25,8 +25,6 @@ const Dashboard = () => {
     }, [user, navigate]);
 
     const handleDeleteBooking = (bookingId) => {
-        if (!window.confirm('Are you sure you want to delete this booking?')) return;
-
         bookingService
             .deleteBooking(bookingId)
             .then(() => {

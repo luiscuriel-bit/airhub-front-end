@@ -44,9 +44,7 @@ const EditProfile = () => {
 	const handleProfileSubmit = async (e) => {
 		e.preventDefault();
 		setIsSubmitting(true);
-		setError('');
-
-		try {
+		setError('');		try {
 			const updatedUser = await authService.updateUser(formData);
 			navigate('/profile'); // Redirect back to profile page after update
 		} catch (err) {
