@@ -15,6 +15,7 @@ import EditFlight from './pages/Flights/EditFlight/EditFlight';
 import ShowFlight from './pages/Flights/ShowFlight/ShowFlight';
 import SearchFlight from './components/SearchFlight/SearchFlight';
 import EditProfile from './components/EditProfile/EditProfile'
+import ShowBooking from './components/Booking/ShowBooking';
 
 
 export const AuthedUserContext = createContext({ user: null, token: null });
@@ -80,12 +81,14 @@ const App = () => {
           <Route path="/auth/signin" element={<Signin setUser={setUser} />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/bookings" element={<ManageBookings />} />
+          <Route path="/bookings/:bookingId"element={<ShowBooking />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/flights" element={<FlightList />} />
           <Route path='/flights/new' element={<NewFlight />}></Route>
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path='/flights/:flightId/edit' element={<EditFlight />}></Route>
           <Route path="/flights/:flightId" element={<ShowFlight />} />
+      
         </Routes>
       </div>
     </AuthedUserContext.Provider>
