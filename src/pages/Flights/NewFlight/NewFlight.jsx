@@ -2,8 +2,8 @@ import { FlightForm } from "../../../components/FlightForm"
 
 const NewFlight = () => {
     return (
-        <FlightForm />
+        <FlightForm buttonText={'Create Flight'} />
     );
 };
 
-export { NewFlight }
+export default NewFlight;

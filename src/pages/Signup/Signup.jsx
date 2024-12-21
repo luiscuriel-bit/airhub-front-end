@@ -186,4 +186,4 @@ const Signup = ({ setUser }) => {
     </>
 };
 
-export { Signup };
+export default Signup;

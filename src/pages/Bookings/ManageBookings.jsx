@@ -1,32 +1,31 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { AuthedUserContext } from '../../App'; // Import the existing context
+import { useEffect, useState, useContext } from 'react';
+import { AuthedUserContext } from '../../App';
 import * as bookingService from '../../services/bookingService';
 
 const ManageBookings = () => {
-  const { user, token } = useContext(AuthedUserContext); // Use context for user and token
-  const [bookings, setBookings] = useState([]);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+    const { user } = useContext(AuthedUserContext);
+    const [bookings, setBookings] = useState([]);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(true);
 
-  // Fetch bookings when the component mounts
-  useEffect(() => {
-    if (!token) {
-      setError('You must be logged in to view your bookings.');
-      setLoading(false);
-      return;
-    }
+    useEffect(() => {
+        if (!user) {
+            setError('You must be logged in to view your bookings.');
+            setLoading(false);
+            return;
+        }
 
-    bookingService
-      .getAllBookings() // Ensure this fetches bookings properly
-      .then((data) => {
-        setBookings(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [token]);
+        bookingService
+            .getAllBookings()
+            .then(data => {
+                setBookings(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, [user]);
 
   const handleDeleteBooking = (bookingId) => {
     if (!window.confirm('Are you sure you want to delete this booking?')) return;

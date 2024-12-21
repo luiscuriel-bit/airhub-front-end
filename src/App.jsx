@@ -1,14 +1,20 @@
 import { createContext, useState } from 'react';
+import { Link, Route, Routes } from 'react-router-dom';
 import './App.css';
 import * as authService from './services/authService';
-import { Link, Route, Routes } from 'react-router-dom';
-import { Signup } from './pages/Signup/Signup';
-import { Signin } from './pages/Signin/Signin';
-import Dashboard from './components/Dashboard/Dashboard';
 import Homepage from './components/Homepage/Homepage';
+import Signup from './pages/Signup/Signup';
+import Signin from './pages/Signin/Signin';
+import Dashboard from './components/Dashboard/Dashboard';
 import ManageBookings from './pages/Bookings/ManageBookings';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
+import FlightList from './pages/Flights/FlightList/FlightList';
+import NewFlight from './pages/Flights/NewFlight/NewFlight';
+import EditFlight from './pages/Flights/EditFlight/EditFlight';
+import ShowFlight from './pages/Flights/ShowFlight/ShowFlight';
 import ProfilePage from './pages/ProfilePage/ProfilePage'; // Import ProfilePage
 import EditProfile from './components/EditProfile'
+
 
 export const AuthedUserContext = createContext({ user: null, token: null });
 
@@ -31,6 +37,7 @@ const App = () => {
                     <>
                         <Link to="/dashboard">Dashboard</Link>
                         <Link to="/bookings">Manage Bookings</Link>
+                        <Link to="/flights/new">Create Flight</Link>
                         <Link to="/profile">Profile</Link>
                         <button onClick={handleSignout}>Sign Out</button>
                     </>
@@ -42,17 +49,21 @@ const App = () => {
                 )}
             </nav>
 
-            <Routes>
-                <Route path="/" element={<Homepage />} />
-                <Route path="/auth/signup" element={<Signup setUser={setUser} />} />
-                <Route path="/auth/signin" element={<Signin setUser={setUser} />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/bookings" element={<ManageBookings />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/profile/edit" element={<EditProfile />} />
-            </Routes>
-        </AuthedUserContext.Provider>
-    );
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/auth/signup" element={<Signup setUser={setUser} />} />
+        <Route path="/auth/signin" element={<Signin setUser={setUser} />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/bookings" element={<ManageBookings />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/flights" element={<FlightList />} />
+        <Route path='/flights/new' element={<NewFlight />}></Route>
+        <Route path="/profile/edit" element={<EditProfile />} />
+        <Route path='/flights/:flightId/edit' element={<EditFlight />}></Route>
+        <Route path="/flights/:flightId" element={<ShowFlight />} />
+      </Routes>
+    </AuthedUserContext.Provider>
+  );
 };
 
 export default App;
