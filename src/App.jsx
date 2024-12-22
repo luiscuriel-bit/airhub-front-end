@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-import { Link, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as authService from './services/authService';
@@ -15,7 +15,7 @@ import EditFlight from './pages/Flights/EditFlight/EditFlight';
 import ShowFlight from './pages/Flights/ShowFlight/ShowFlight';
 import EditProfile from './components/EditProfile/EditProfile'
 import ShowBooking from './components/Booking/ShowBooking';
-import NavBar from './components/Navbar/NavBar';
+import NavBar from './components/NavBar/NavBar';
 import SearchFlight from './components/SearchFlight/SearchFlight';
 
 
