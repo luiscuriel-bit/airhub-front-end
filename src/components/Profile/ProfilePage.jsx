@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthedUserContext } from '../../App';
+import AuthedUserContext  from '../../contexts/AuthedUserContext';
 
 const ProfilePage = () => {
     const { user } = useContext(AuthedUserContext);
-    const navigate = useNavigate(); // Allows navigation to the Edit Profile page
+    const navigate = useNavigate();
 
     return (
         <div className="container my-4">

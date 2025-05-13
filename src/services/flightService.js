@@ -1,140 +1,105 @@
+import apiFetch from './api';
+
 const BASE_URL = `${import.meta.env.VITE_BACKEND_SERVER_URL}/flights`;
 
-const getAllFlights = async () => {
+const getAllFlights = () => {
     try {
-        const res = await fetch(`${BASE_URL}/`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-        });
+        const json = apiFetch(`${BASE_URL}/`);
 
-        const json = await res.json();
-
-        if (!res.ok) {
-            throw new Error(json.message);
+        if (json.success) {
+            return json.data;
         }
-        return json;
+        throw new Error(json.error || 'Fetch failed');
     } catch (error) {
-        console.error('Error fetching flights:', error);
+        console.error('Failed to fetch flights', error);
         throw error;
     }
 };
 
-const getFlightById = async (flightId) => {
+const getFlightById = (flightId) => {
     try {
-        const res = await fetch(`${BASE_URL}/${flightId}`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-        });
+        const json = apiFetch(`${BASE_URL}/${flightId}`);
 
-        const json = await res.json();
-
-        if (!res.ok) {
-            throw new Error(json.message);
+        if (json.success) {
+            return json.data;
         }
-        return json;
+        throw new Error(json.error || 'Fetch failed');
     } catch (error) {
-        console.error(`Error fetching flight with ID ${flightId}`, error);
-        throw error; // This will throw the error to the component
+        console.error('Failed to fetch flight', error);
+        throw error;
     }
 };
-
-const createFlight = async (formData) => {
+const createFlight = (formData) => {
     try {
-        const res = await fetch(`${BASE_URL}/`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData),
-        });
-
-        const json = await res.json();
-
-        if (!res.ok) {
-            throw new Error(json.message);
+        const json =
+            apiFetch(`${BASE_URL}/`, {
+                method: 'POST',
+                body: JSON.stringify(formData),
+            });
+        if (json.success) {
+            return json.data;
         }
-        return json;
+        throw new Error(json.error || 'Flight creation failed');
     } catch (error) {
-        console.error('Error creating flight:', error);
+        console.error('Failed to create flight', error);
         throw error;
     }
 };
 
-const updateFlight = async (flightId, formData) => {
+const updateFlight = (flightId, formData) => {
     try {
-        const res = await fetch(`${BASE_URL}/${flightId}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData),
-        });
-
-        const json = await res.json();
-
-        if (!res.ok) {
-            throw new Error(json.message);
+        const json =
+            apiFetch(`${BASE_URL}/${flightId}`, {
+                method: 'PUT',
+                body: JSON.stringify(formData),
+            });
+        if (json.success) {
+            return json.data;
         }
-        return json;
+        throw new Error(json.error || 'Flight update failed');
     } catch (error) {
-        console.error(`Error updating flight with ID ${flightId}`, error);
+        console.error('Failed to update flight', error);
         throw error;
     }
 };
 
-const deleteFlight = async (flightId) => {
+const deleteFlight = (flightId) => {
     try {
-        const res = await fetch(`${BASE_URL}/${flightId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-        });
-
-        const json = await res.json();
-
-        if (!res.ok) {
-            throw new Error(json.message);
+        const json =
+            apiFetch(`${BASE_URL}/${flightId}`, {
+                method: 'DELETE',
+            });
+        if (json.success) {
+            return json.data;
         }
-        return json;
+        throw new Error(json.error || 'Flight deletion failed');
     } catch (error) {
-        console.error(`Error deleting flight with ID ${flightId}`, error);
+        console.error('Failed to delete booking', error);
         throw error;
     }
 };
 
-const searchFlight = async (formData) => {
+const searchFlight = (formData) => {
     try {
-        const res = await fetch(`${BASE_URL}/search`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData),
-        });
-
-        const json = await res.json();
-
-        if (!res.ok) {
-            throw new Error(json.message);
+        const json =
+            apiFetch(`${BASE_URL}/search`, {
+                method: 'POST',
+                body: JSON.stringify(formData),
+            });
+        if (json.success) {
+            return json.data;
         }
-        return json;
+        throw new Error(json.error || 'Search failed');
     } catch (error) {
-        console.error(`Error searching flights`, error);
+        console.error('Failed to search flight', error);
         throw error;
     }
 };
-
 export {
     getAllFlights,
     getFlightById,
     createFlight,
     updateFlight,
     deleteFlight,
-    searchFlight,
+    searchFlight
 };

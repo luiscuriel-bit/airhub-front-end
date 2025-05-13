@@ -1,7 +1,8 @@
+import { format } from 'date-fns';
 import { useContext, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import * as flightService from "../../../services/flightService";
-import { AuthedUserContext } from "../../../App";
+import * as flightService from "../../services/flightService";
+import AuthedUserContext  from '../../contexts/AuthedUserContext';
 
 const ShowFlight = () => {
     const navigate = useNavigate();
@@ -9,14 +10,15 @@ const ShowFlight = () => {
     const { flightId } = useParams();
     const [flight, setFlight] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     useEffect(() => {
         const fetchFlight = async () => {
             try {
                 const flightData = await flightService.getFlightById(flightId);
-                setFlight(flightData);
+                setFlight(flightData.data);
             } catch (error) {
-                setErrorMessage(error.message);
+                setErrorMessage(error?.message || 'Unable to fetch flight details. Please try again later.');
             }
         };
 
@@ -26,25 +28,27 @@ const ShowFlight = () => {
     const handleDelete = async () => {
         try {
             await flightService.deleteFlight(flightId);
-            navigate('/flights');
+            setSuccessMessage('Flight deleted successfully.');
+            setTimeout(() => {
+                navigate('/flights');
+            }, 1000);
         } catch (error) {
-            setErrorMessage('Error deleting flight. Please try again.', error);
+            setErrorMessage(error?.message || 'Unable to delete flight. Please try again later.');
         }
     };
 
 
     if (errorMessage) {
-        return <div role="alert" className="alert alert-danger">{errorMessage}</div>;
+        return <div className="alert alert-danger text-center">{errorMessage}</div>;
     }
 
     if (!flight) {
-        return <div className="alert alert-info" role="alert">Loading flight details...</div>;
+        return <div className="alert alert-info text-center">Loading flight details...</div>;
     }
 
 
     const formatDateTime = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+        return format(new Date(dateString), "MMM d, yyyy h:mm a");
     };
 
 
@@ -60,6 +64,7 @@ const ShowFlight = () => {
                                     {errorMessage}
                                 </div>
                             )}
+                            {successMessage && <div className="alert alert-success text-center">{successMessage}</div>}
                             <div className="mb-3">
                                 <p><strong>Flight Number:</strong> {flight.flightNumber}</p>
                                 <p><strong>Origin:</strong> {flight.origin}</p>

@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import * as authService from '../../services/authService';
+import AuthedUserContext  from '../../contexts/AuthedUserContext';
 
-const Signup = ({ setUser }) => {
+const Signup = () => {
     const navigate = useNavigate();
+    const { signup } = useContext(AuthedUserContext);
 
     const [isSubmitting, setIsSubmitting] = useState(false); // This is to know when a form is already being submitted
     const [errorMessage, setErrorMessage] = useState('');
@@ -59,12 +60,10 @@ const Signup = ({ setUser }) => {
         setIsSubmitting(true);
 
         try {
-            const newUser = await authService.signup(formData);
-            setUser(newUser);
+            await signup(formData);
             navigate('/');
         } catch (error) {
-            // This catches amy error that could come from authService
-            setErrorMessage(error.message);
+            setErrorMessage(error?.message || 'An unexpected error occurred. Please try again.');
         } finally {
             setIsSubmitting(false);
         }

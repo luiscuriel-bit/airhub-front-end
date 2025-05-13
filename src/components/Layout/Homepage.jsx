@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthedUserContext } from '../../App';
+import AuthedUserContext  from '../../contexts/AuthedUserContext';
 
 const Homepage = () => {
     const { user } = useContext(AuthedUserContext);

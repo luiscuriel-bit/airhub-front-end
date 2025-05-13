@@ -1,4 +1,4 @@
-import { FlightForm } from "../../../components/FlightForm/FlightForm"
+import { FlightForm } from "../../components/Flight/FlightForm"
 
 const NewFlight = () => {
     return (

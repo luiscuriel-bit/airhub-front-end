@@ -1,33 +1,44 @@
+import { format } from 'date-fns';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import * as flightService from '../../../services/flightService';
+import * as flightService from '../../services/flightService';
 
 const FlightList = () => {
     const [flights, setFlights] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const entriesPerPage = 5;
+
     useEffect(() => {
         const fetchFlights = async () => {
             try {
                 const data = await flightService.getAllFlights();
                 setFlights(data);
             } catch (error) {
-                setErrorMessage('Unable to fetch flights. Please try again later.', error);
+                setErrorMessage(error?.message || 'Unable to fetch flights. Please try again later.');
             } finally {
-                setIsLoading(false);
+                setLoading(false);
             }
         };
 
         fetchFlights();
     }, []);
+    const startIndex = (currentPage - 1) * entriesPerPage;
+    const endIndex = startIndex + entriesPerPage;
+    const currentFlights = flights.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(flights.length / entriesPerPage);
 
     const formatDateTime = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+        return format(new Date(dateString), "MMM d, yyyy h:mm a");
     };
 
-    if (isLoading) {
-        return <p>Loading flights...</p>;
+    if (loading) {
+        return <div className="alert alert-info text-center">Loading flights...</div>;
+    }
+
+    if (errorMessage) {
+        return <div className="alert alert-danger text-center">{errorMessage}</div>;
     }
 
     if (!flights.length) {
@@ -54,7 +65,7 @@ const FlightList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {flights.map(flight => (
+                    {currentFlights.map(flight => (
                         <tr key={flight._id}>
                             <td>{flight.flightNumber}</td>
                             <td>{flight.origin}</td>
@@ -70,6 +81,23 @@ const FlightList = () => {
                     ))}
                 </tbody>
             </table>
+            <div className="d-flex justify-content-center my-4">
+                <button
+                    className="btn btn-secondary mx-1"
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </button>
+                <span className="align-self-center mx-2">Page {currentPage} of {totalPages}</span>
+                <button
+                    className="btn btn-secondary mx-1"
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                >
+                    Next
+                </button>
+            </div>
         </div>
     );
 };

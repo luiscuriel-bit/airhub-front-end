@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
-import { AuthedUserContext } from '../../App';
+import AuthedUserContext from '../../contexts/AuthedUserContext'
 import * as bookingService from '../../services/bookingService';
-import SearchFlight from '../SearchFlight/SearchFlight';
+import SearchFlight from '../Flight/SearchFlight';
 
 const Dashboard = () => {
     const { user } = useContext(AuthedUserContext);
@@ -9,39 +9,42 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // Fetch user bookings on mount
     useEffect(() => {
-        bookingService
-            .getAllBookings()
-            .then((data) => {
+        const fetchBookings = async () => {
+            try {
+                const data = await bookingService.getAllBookings();
                 setBookings(data);
                 setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
+            } catch (error) {
+                setError(error?.message || 'Unable to fetch bookings. Please try again later.');
+            } finally {
                 setLoading(false);
-            });
+            }
+        }
+        fetchBookings();
     }, []);
 
+
+
     const handleDeleteBooking = (bookingId) => {
-        bookingService
-            .deleteBooking(bookingId)
-            .then(() => {
-                setBookings((prev) => prev.filter((booking) => booking._id !== bookingId));
-            })
-            .catch((err) => setError(err.message));
+        try {
+            const data = bookingService.deleteBooking(bookingId);
+            setBookings((prev) => prev.filter((booking) => booking._id !== bookingId));
+        } catch (error) {
+            setError(error?.message || 'Unable to delete booking. Please try again later.');
+        }
     };
 
     return (
         <div className="container py-5">
-             <SearchFlight />
+            <SearchFlight />
             <h1 className="display-4">Dashboard</h1>
             <p className="lead">Welcome back, {user.username}!</p>
 
             <div className="mt-5">
                 <h2>Your Bookings</h2>
-                {loading && <p>Loading your bookings...</p>}
-                {error && <p className="text-danger">{error}</p>}
+                {loading && <div className="alert alert-info text-center">Loading your bookings...</div>}
+                {error && <div className="alert alert-danger text-center">{error}</div>}
                 {!loading && !error && bookings.length > 0 ? (
                     <ul className="list-group">
                         {bookings.map((booking) => (
