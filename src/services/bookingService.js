@@ -1,3 +1,4 @@
+import logError from '../utils/logError';
 import apiFetch from './api';
 
 const BASE_URL = `${import.meta.env.VITE_BACKEND_SERVER_URL}/bookings`;
@@ -11,7 +12,8 @@ const getAllBookings = async () => {
         }
         throw new Error(json.error || 'Bookings fetch failed');
     } catch (error) {
-        console.error('Failed to fetch bookings', error);
+        logError('Failed to fetch bookings', error);
+
         throw error;
     }
 }
@@ -25,7 +27,8 @@ const getBookingById = async (bookingId) => {
         }
         throw new Error(json.error || 'Booking fetch failed');
     } catch (error) {
-        console.error('Failed to fetch booking', error);
+        logError('Failed to fetch booking', error);
+
         throw error;
     }
 }
@@ -42,10 +45,12 @@ const createBooking = async (formData) => {
         }
         throw new Error(json.error || 'Booking creation failed');
     } catch (error) {
-        console.error('Failed to create booking', error);
+        logError('Failed to create booking', error);
+
         throw error;
     }
 }
+
 const deleteBooking = async (bookingId) => {
     try {
         const json = await apiFetch(`${BASE_URL}/${bookingId}`, {
@@ -56,7 +61,8 @@ const deleteBooking = async (bookingId) => {
         }
         throw new Error(json.error || 'Booking deletion failed');
     } catch (error) {
-        console.error('Failed to delete booking', error);
+        logError('Failed to delete booking', error);
+
         throw error;
     }
 }

@@ -20,7 +20,7 @@ const ManageBookings = () => {
                 setBookings(bookingsData);
                 setLoading(false);
             } catch (error) {
-                setErrorMessage(error?.message || 'Unable to fetch bookings. Please try again later.');
+                setErrorMessage(error || 'Unable to fetch bookings. Please try again later.');
                 setLoading(false);
             }
         };
@@ -33,7 +33,7 @@ const ManageBookings = () => {
             setBookings(prev => prev.filter(booking => booking._id !== bookingId));
             setSuccessMessage('Booking deleted successfully.');
         } catch (error) {
-            setErrorMessage(error?.message || 'Unable to delete booking. Please try again later.');
+            setErrorMessage(error || 'Unable to delete booking. Please try again later.');
         }
     };
 

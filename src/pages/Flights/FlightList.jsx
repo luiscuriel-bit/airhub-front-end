@@ -16,7 +16,7 @@ const FlightList = () => {
                 const data = await flightService.getAllFlights();
                 setFlights(data);
             } catch (error) {
-                setErrorMessage(error?.message || 'Unable to fetch flights. Please try again later.');
+                setErrorMessage(error || 'Unable to fetch flights. Please try again later.');
             } finally {
                 setLoading(false);
             }

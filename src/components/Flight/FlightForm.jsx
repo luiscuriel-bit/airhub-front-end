@@ -11,16 +11,20 @@ const FlightForm = ({ flightId = null, initialData = {}, buttonText }) => {
         return format(date, "yyyy-MM-dd'T'HH:mm");
     }
 
-    if (Object.keys(initialData).length) {
-        initialData.departureTime = getTimeInputString(new Date(initialData.departureTime));
-        initialData.arrivalTime = getTimeInputString(new Date(initialData.arrivalTime));
-    }
+    const formattedInitialData = Object.keys(initialData).length
+        ? {
+            ...initialData,
+            departureTime: getTimeInputString(new Date(initialData.departureTime)),
+            arrivalTime: getTimeInputString(new Date(initialData.arrivalTime)),
+        }
+        : {};
+
+    const [formData, setFormData] = useState(formattedInitialData);
 
     const [isSubmitting, setIsSubmitting] = useState(false); // This is to know when a form is already being submitted
     const [errorMessage, setErrorMessage] = useState('');
     const [invalidFields, setInvalidFields] = useState({});
     const [touchedFields, setTouchedFields] = useState({}); // Tracks the fields in the form that have been interacted with
-    const [formData, setFormData] = useState(initialData);
 
     useEffect(() => {
         if (Object.keys(invalidFields).length) {
@@ -80,20 +84,22 @@ const FlightForm = ({ flightId = null, initialData = {}, buttonText }) => {
         event.preventDefault();
         if (isSubmitting || Object.keys(invalidFields).length) return;
         setIsSubmitting(true);
-        formData.departureTime = new Date(formData.departureTime);
-        formData.arrivalTime = new Date(formData.arrivalTime);
-
+        const submitData = {
+            ...formData,
+            departureTime: new Date(formData.departureTime),
+            arrivalTime: new Date(formData.arrivalTime),
+        };
         try {
             if (buttonText === 'Create Flight')
-                flightId = (await flightService.createFlight(formData))._id;
+                flightId = (await flightService.createFlight(submitData))._id;
             else
-                await flightService.updateFlight(flightId, formData);
+                await flightService.updateFlight(flightId, submitData);
             setSuccessMessage(buttonText === 'Create Flight' ? 'Flight created successfully!' : 'Flight updated successfully!');
             setTimeout(() => {
                 navigate(`/flights/${flightId}`);
             }, 1000);
         } catch (error) {
-            setErrorMessage(error?.message || 'Unable to save flight. Please try again later.');
+            setErrorMessage(error || 'Unable to save flight. Please try again later.');
         } finally {
             setIsSubmitting(false);
         }

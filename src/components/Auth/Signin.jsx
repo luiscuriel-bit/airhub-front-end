@@ -1,10 +1,10 @@
 import { useEffect, useState, useContext } from 'react';
-import AuthedUserContext  from '../../contexts/AuthedUserContext';
+import AuthedUserContext from '../../contexts/AuthedUserContext';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Signin = () => {
     const navigate = useNavigate();
-    const {signin} = useContext(AuthedUserContext);
+    const { signin } = useContext(AuthedUserContext);
     const [isSubmitting, setIsSubmitting] = useState(false); // This is to know when a form is already being submitted
     const [errorMessage, setErrorMessage] = useState('');
     const [invalidFields, setInvalidFields] = useState({});

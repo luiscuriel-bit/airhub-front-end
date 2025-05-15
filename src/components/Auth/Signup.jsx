@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthedUserContext  from '../../contexts/AuthedUserContext';
+import AuthedUserContext from '../../contexts/AuthedUserContext';
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -63,7 +63,7 @@ const Signup = () => {
             await signup(formData);
             navigate('/');
         } catch (error) {
-            setErrorMessage(error?.message || 'An unexpected error occurred. Please try again.');
+            setErrorMessage(error || 'An unexpected error occurred. Please try again.');
         } finally {
             setIsSubmitting(false);
         }

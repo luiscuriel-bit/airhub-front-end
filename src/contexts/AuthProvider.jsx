@@ -7,10 +7,16 @@ const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const checkSession = async () => {
-            const userData = await authService.refreshAccessToken()
-            setUser(userData.user);
+            try {
+                const userData = await authService.refreshAccessToken();
+                setUser(userData.user);
+            } catch (error) {
+                if (import.meta.env.DEV) {
+                    console.log('No active session:', error.message);
+                }
+                setUser(null);
+            }
         };
-
         checkSession();
     }, []);
 

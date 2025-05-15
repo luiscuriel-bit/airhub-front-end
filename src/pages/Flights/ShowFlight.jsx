@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { useContext, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import * as flightService from "../../services/flightService";
-import AuthedUserContext  from '../../contexts/AuthedUserContext';
+import AuthedUserContext from '../../contexts/AuthedUserContext';
 
 const ShowFlight = () => {
     const navigate = useNavigate();
@@ -16,9 +16,9 @@ const ShowFlight = () => {
         const fetchFlight = async () => {
             try {
                 const flightData = await flightService.getFlightById(flightId);
-                setFlight(flightData.data);
+                setFlight(flightData);
             } catch (error) {
-                setErrorMessage(error?.message || 'Unable to fetch flight details. Please try again later.');
+                setErrorMessage(error || 'Unable to fetch flight details. Please try again later.');
             }
         };
 
@@ -33,7 +33,7 @@ const ShowFlight = () => {
                 navigate('/flights');
             }, 1000);
         } catch (error) {
-            setErrorMessage(error?.message || 'Unable to delete flight. Please try again later.');
+            setErrorMessage(error || 'Unable to delete flight. Please try again later.');
         }
     };
 

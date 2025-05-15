@@ -1,7 +1,8 @@
 import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthedUserContext  from '../../contexts/AuthedUserContext';
+import AuthedUserContext from '../../contexts/AuthedUserContext';
 import * as authService from '../../services/authService';
+import logError from '../../utils/logError';
 
 const EditProfile = () => {
     const { user, setUser } = useContext(AuthedUserContext);
@@ -63,14 +64,14 @@ const EditProfile = () => {
         setIsSubmitting(true);
         try {
             const updatedUser = await authService.updateUser(formData);
-            setUser(updatedUser); 
+            setUser(updatedUser);
             setSuccessMessage('Profile updated successfully!');
             setTimeout(() => {
                 navigate('/profile');
             }, 1000);
             setIsSubmitting(false);
-        } catch (err) {
-            console.error(err.message || 'Failed to update profile.');
+        } catch (error) {
+            logError('Failed to update profile.', error);
         }
     }
 

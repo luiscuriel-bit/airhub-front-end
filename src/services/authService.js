@@ -1,3 +1,4 @@
+import logError from '../utils/logError';
 import apiFetch from './api';
 
 const BASE_URL = `${import.meta.env.VITE_BACKEND_SERVER_URL}/auth`;
@@ -12,9 +13,10 @@ const signup = async (formData) => {
         if (json.success) {
             return json.data;
         }
-        throw new Error(json.error || 'Signup failed');
+        throw new Error(json.error);
     } catch (error) {
-        console.error('Failed to sign up', error);
+        logError('Failed to sign up', error);
+
         throw error;
     }
 };
@@ -25,12 +27,13 @@ const signin = async (formData) => {
             method: 'POST',
             body: JSON.stringify(formData),
         });
-        if(json.success) {
+        if (json.success) {
             return json.data;
         }
-        throw new Error(json.error || 'Signin failed');
+        throw new Error(json.error);
     } catch (error) {
-        console.error('Failed to sign in', error);
+        logError('Failed to sign in', error);
+
         throw error;
     }
 };
@@ -43,9 +46,10 @@ const refreshAccessToken = async () => {
         if (json.success) {
             return json.data;
         }
-        throw new Error(json.error || 'Authentication failed');
+        throw new Error(json.error);
     } catch (error) {
-        console.error('Failed to refresh token', error);
+        logError('Failed to refresh token', error);
+
         throw error;
     }
 };
@@ -64,9 +68,10 @@ const updateUser = async (formData) => {
         if (json.success) {
             return json.data;
         }
-        throw new Error(json.error || 'Update failed');
+        throw new Error(json.error);
     } catch (error) {
-        console.error('Failed to update user', error);
+        logError('Failed to update user', error);
+
         throw error;
     }
 };

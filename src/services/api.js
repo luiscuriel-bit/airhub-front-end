@@ -1,3 +1,4 @@
+import logError from "../utils/logError";
 import { refreshAccessToken, signout } from "./authService";
 
 const apiFetch = async (url, options = {}, retry = true) => {
@@ -28,7 +29,8 @@ const apiFetch = async (url, options = {}, retry = true) => {
         }
         return data;
     } catch (error) {
-        console.error('API Fetch Error:', error.message);
+        logError('API Fetch Error:', error);
+
         if (error.message === 'Session expired. Please sign in again.') {
             window.location.href = '/auth/signin';
         }

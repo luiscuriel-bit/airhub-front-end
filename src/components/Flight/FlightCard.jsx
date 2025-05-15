@@ -16,7 +16,7 @@ const FlightCard = ({ flight }) => {
             navigate(`/bookings/${booking._id}`);
         } catch (error) {
             // This catches any error that could come from flightService
-            setErrorMessage(error.message);
+            setErrorMessage(error);
         } finally {
             setIsSubmitting(false);
         }
