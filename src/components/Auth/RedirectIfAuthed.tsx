@@ -7,9 +7,7 @@ const RedirectIfAuthed = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (user) {
-            navigate('/dashboard');
-        }
+        if (user) navigate('/dashboard');
     }, [user, navigate]);
 
     return user ? null : <Outlet />;
