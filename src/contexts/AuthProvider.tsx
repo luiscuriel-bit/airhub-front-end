@@ -1,37 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import * as authService from '../services/authService';
 import AuthedUserContext from "./AuthedUserContext";
+import { User } from "../types";
 
-const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         const checkSession = async () => {
             try {
                 const userData = await authService.refreshAccessToken();
-                setUser(userData.user);
-            } catch (error) {
-                if (import.meta.env.DEV) {
-                    console.log('No active session:', error.message);
-                }
+                setUser(userData);
+            } catch (error: any) {
                 setUser(null);
             }
         };
         checkSession();
     }, []);
 
-    const signup = async (formData) => {
+    const signup = async (formData: any) => {
         const userData = await authService.signup(formData);
-        setUser(userData.user);
-
-        return userData.user;
+        setUser(userData);
+        return userData;
     };
 
-    const signin = async (formData) => {
+    const signin = async (formData: any) => {
         const userData = await authService.signin(formData);
-        setUser(userData.user);
-
-        return userData.user;
+        setUser(userData);
+        return userData;
     };
 
     const signout = () => {
