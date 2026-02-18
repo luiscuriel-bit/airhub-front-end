@@ -35,7 +35,7 @@ const Dashboard = () => {
     return (
         <div className="space-y-10">
             <SearchFlight />
-            
+
             <div className="border-t border-slate-200 pt-10">
                 <header className="flex items-center justify-between mb-8">
                     <div>

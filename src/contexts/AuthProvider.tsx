@@ -5,6 +5,7 @@ import { User } from "../types";
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const checkSession = async () => {
@@ -13,10 +14,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setUser(userData);
             } catch (error: any) {
                 setUser(null);
+            } finally {
+                setLoading(false);
             }
         };
         checkSession();
     }, []);
+
+    if (loading) return <div className="h-screen flex items-center justify-center">Cargando...</div>;
 
     const signup = async (formData: any) => {
         const userData = await authService.signup(formData);

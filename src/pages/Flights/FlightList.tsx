@@ -2,13 +2,31 @@ import { format } from 'date-fns';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import * as flightService from '../../services/flightService';
+import { useSocket } from '../../hooks/useSocket';
+import { Flight } from '../../types';
 
 const FlightList = () => {
-    const [flights, setFlights] = useState<any[]>([]);
+    const [flights, setFlights] = useState<Flight[]>([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const entriesPerPage = 5;
+
+    useSocket((event, data) => {
+        if (event === 'flight:created') {
+            setFlights(prev => [data, ...prev]);
+        }
+        if (event === 'flight:updated') {
+            setFlights(prev =>
+                prev.map(f => f._id === data._id ? data : f)
+            );
+        }
+        if (event === 'flight:deleted') {
+            setFlights(prev =>
+                prev.filter(f => f._id !== data)
+            );
+        }
+    });
 
     useEffect(() => {
         const fetchFlights = async () => {
@@ -86,8 +104,8 @@ const FlightList = () => {
                                         </span>
                                     </td>
                                     <td className="px-8 py-6 text-right">
-                                        <Link 
-                                            to={`/flights/${flight._id}`} 
+                                        <Link
+                                            to={`/flights/${flight._id}`}
                                             className="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-900 hover:text-white transition-all group-hover:scale-105 active:scale-95 shadow-sm"
                                         >
                                             DETAILS
