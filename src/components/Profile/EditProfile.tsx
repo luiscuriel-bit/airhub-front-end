@@ -1,49 +1,52 @@
-import { useState, useContext, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useContext, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+import { profileSchema } from '../../utils/schemas';
+import { ProfileFields } from '../../utils/schemas';
 import { useNavigate } from 'react-router-dom';
 import AuthedUserContext from '../../contexts/AuthedUserContext';
 import * as authService from '../../services/authService';
 
 const EditProfile = () => {
     const { user, setUser } = useContext(AuthedUserContext);
-    const [formData, setFormData] = useState({
-        username: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-    });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [status, setStatus] = useState({ type: '', message: '' });
-    const navigate = useNavigate();
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm<ProfileFields>({
+        resolver: zodResolver(profileSchema),
+        defaultValues: {
+            username: user?.username || '',
+            firstName: user?.firstName || '',
+            lastName: user?.lastName || '',
+            email: user?.email || '',
+        }
+    })
 
     useEffect(() => {
         if (user) {
-            setFormData({
-                username: user.username || '',
-                firstName: user.firstName || '',
-                lastName: user.lastName || '',
-                email: user.email || '',
-            });
+            reset({
+                username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+            })
         }
-    }, [user]);
+    }, [user, reset])
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    const navigate = useNavigate();
 
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        setStatus({ type: '', message: '' });
-
+    const onSubmit = async (data: ProfileFields) => {
         try {
-            const updatedUser = await authService.updateUser(formData);
+            const updatedUser = await authService.updateUser(data);
             setUser(updatedUser);
-            setStatus({ type: 'success', message: 'Profile updated successfully!' });
+            toast.success('Profile updated successfully!')
             setTimeout(() => navigate('/profile'), 1500);
         } catch (error: any) {
-            setStatus({ type: 'error', message: error?.message || 'Failed to update profile.' });
-        } finally {
-            setIsSubmitting(false);
+            toast.error(error?.message || 'Failed to update profile.');
         }
     };
 
@@ -56,32 +59,60 @@ const EditProfile = () => {
                 <p className="text-slate-500 mt-2 text-lg">Keep your personal details up to date.</p>
             </header>
 
-            {status.message && (
-                <div className={`p-4 rounded-2xl text-sm font-bold text-center ${status.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-rose-50 text-rose-700 border border-rose-100'}`}>
-                    {status.message}
-                </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1">
                         <label className="text-sm font-bold text-slate-700 ml-1">First Name</label>
-                        <input name="firstName" value={formData.firstName} onChange={handleChange} className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-700" />
+                        <input
+                            {...register('firstName')}
+                            type="text"
+                            className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-700"
+                            />
+                            {errors.firstName && (
+                                <p className="mt-1 text-xs font-medium text-rose-500">
+                                    {errors.firstName.message}
+                                </p>
+                            )}
                     </div>
                     <div className="space-y-1">
                         <label className="text-sm font-bold text-slate-700 ml-1">Last Name</label>
-                        <input name="lastName" value={formData.lastName} onChange={handleChange} className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-700" />
+                        <input 
+                        {...register('lastName')}
+                        type="text"
+                        className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-700" 
+                        />
+                        {errors.lastName && (
+                            <p className="mt-1 text-xs font-medium text-rose-500">
+                                {errors.lastName.message}
+                            </p>
+                        )}
                     </div>
                 </div>
 
                 <div className="space-y-1">
                     <label className="text-sm font-bold text-slate-700 ml-1">Username</label>
-                    <input name="username" value={formData.username} onChange={handleChange} className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-700 bg-slate-50" />
+                    <input 
+                    {...register('username')}
+                    type="text"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-700 bg-slate-50" />
+                    {errors.username && (
+                        <p className="mt-1 text-xs font-medium text-rose-500">
+                            {errors.username.message}
+                        </p>
+                    )}
                 </div>
 
                 <div className="space-y-1">
                     <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
-                    <input name="email" type="email" value={formData.email} onChange={handleChange} className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-700" />
+                    <input 
+                    {...register('email')}
+                    type="email"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium text-slate-700" />
+                    {errors.email && (
+                        <p className="mt-1 text-xs font-medium text-rose-500">
+                            {errors.email.message}
+                        </p>
+                    )}
                 </div>
 
                 <div className="flex space-x-4 pt-4">

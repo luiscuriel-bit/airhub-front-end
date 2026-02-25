@@ -1,34 +1,30 @@
-import { useEffect, useState, useContext, ChangeEvent, FormEvent } from 'react';
-import AuthedUserContext from '../../contexts/AuthedUserContext';
+import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+import { signinSchema, SigninFields } from '../../utils/schemas';
+import AuthedUserContext from '../../contexts/AuthedUserContext';
 
 const Signin = () => {
     const navigate = useNavigate();
     const { signin } = useContext(AuthedUserContext);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    
-    const [formData, setFormData] = useState({
-        username: '',
-        password: '',
+
+    const {
+        register,
+        handleSubmit,
+        formState: {errors, isSubmitting},
+    } = useForm<SigninFields>({
+        resolver: zodResolver(signinSchema),
     });
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        setErrorMessage('');
-
+    const onSubmit = async (data: SigninFields) => {
         try {
-            await signin(formData);
+            await signin(data);
+            toast.success('Welcome back to AirHub! 🛫');
             navigate('/');
         } catch (error: any) {
-            setErrorMessage(error?.message || 'Invalid credentials. Please try again.');
-        } finally {
-            setIsSubmitting(false);
+            toast.error(error?.message || 'Invalid credentials. Please try again.');
         }
     };
 
@@ -47,13 +43,7 @@ const Signin = () => {
                     </p>
                 </div>
 
-                {errorMessage && (
-                    <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-sm text-center">
-                        {errorMessage}
-                    </div>
-                )}
-
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
                         <div>
                             <label htmlFor="username" className="block text-sm font-medium text-slate-700 mb-1">
@@ -61,14 +51,14 @@ const Signin = () => {
                             </label>
                             <input
                                 id="username"
-                                name="username"
+                                {...register('username')}
                                 type="text"
-                                required
-                                className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-all shadow-sm"
-                                placeholder="tu_usuario"
-                                value={formData.username}
-                                onChange={handleChange}
+                                className={`block w-full rounded-xl border ${errors.username ? 'border-rose-500 ring-rose-500' : 'border-slate-300'} px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-all shadow-sm`}
+                                placeholder="your_username"
                             />
+                            {errors.username && (
+                                <p className="mt-1 text-xs font-medium text-rose-500">{errors.username.message}</p>
+                            )}
                         </div>
                         <div>
                             <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
@@ -76,13 +66,13 @@ const Signin = () => {
                             </label>
                             <input
                                 id="password"
-                                name="password"
+                                {...register('password')}
                                 type="password"
-                                required
-                                className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-all shadow-sm"
-                                value={formData.password}
-                                onChange={handleChange}
+                                className={`block w-full rounded-xl border ${errors.password ? 'border-rose-500 ring-rose-500' : 'border-slate-300'} px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-all shadow-sm`}
                             />
+                            {errors.password && (
+                                <p className="mt-1 text-xs font-medium text-rose-500">{errors.password.message}</p>
+                            )}
                         </div>
                     </div>
 

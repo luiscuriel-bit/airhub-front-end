@@ -1,44 +1,30 @@
-import { useContext, useState, ChangeEvent, FormEvent } from 'react';
+import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+import { signupSchema, SignupFields } from '../../utils/schemas';
 import AuthedUserContext from '../../contexts/AuthedUserContext';
 
 const Signup = () => {
     const navigate = useNavigate();
     const { signup } = useContext(AuthedUserContext);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        username: '',
-        email: '',
-        password: '',
-        passwordConfirmation: '',
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm<SignupFields>({
+        resolver: zodResolver(signupSchema),
     });
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        
-        if (formData.password !== formData.passwordConfirmation) {
-            setErrorMessage("Passwords don't match!");
-            return;
-        }
-
-        setIsSubmitting(true);
-        setErrorMessage('');
-
+    const onSubmit = async (data: SignupFields) => {
         try {
-            await signup(formData);
+            await signup(data);
+            toast.success('Account created! Welcome to AirHub! 🛫');
             navigate('/');
         } catch (error: any) {
-            setErrorMessage(error || 'An error occurred during signup.');
-        } finally {
-            setIsSubmitting(false);
+            toast.error(error?.message || 'Failed to create account.');
         }
     };
 
@@ -57,37 +43,36 @@ const Signup = () => {
                     </p>
                 </div>
 
-                {errorMessage && (
-                    <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-sm text-center font-medium animate-in fade-in zoom-in duration-300">
-                        {errorMessage}
-                    </div>
-                )}
 
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* First Name */}
                         <div className="space-y-1">
                             <label className="text-sm font-semibold text-slate-700 ml-1">First Name</label>
                             <input
-                                name="firstName"
+                                {...register('firstName')}
                                 type="text"
-                                required
                                 className="block w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-all shadow-sm"
-                                value={formData.firstName}
-                                onChange={handleChange}
                             />
+                            {errors.firstName && (
+                                <p className="mt-1 text-xs font-medium text-rose-500">
+                                    {errors.firstName.message}
+                                </p>
+                            )}
                         </div>
                         {/* Last Name */}
                         <div className="space-y-1">
                             <label className="text-sm font-semibold text-slate-700 ml-1">Last Name</label>
                             <input
-                                name="lastName"
+                                {...register('lastName')}
                                 type="text"
-                                required
                                 className="block w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-all shadow-sm"
-                                value={formData.lastName}
-                                onChange={handleChange}
                             />
+                            {errors.lastName && (
+                                <p className="mt-1 text-xs font-medium text-rose-500">
+                                    {errors.lastName.message}
+                                </p>
+                            )}
                         </div>
                     </div>
 
@@ -96,26 +81,30 @@ const Signup = () => {
                         <div className="space-y-1">
                             <label className="text-sm font-semibold text-slate-700 ml-1">Username</label>
                             <input
-                                name="username"
+                            {...register('username')}
                                 type="text"
-                                required
                                 className="block w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-all shadow-sm"
-                                value={formData.username}
-                                onChange={handleChange}
                             />
+                            {errors.username && (
+                                <p className="mt-1 text-xs font-medium text-rose-500">
+                                    {errors.username.message}
+                                </p>
+                            )}
                         </div>
 
                         {/* Email */}
                         <div className="space-y-1">
                             <label className="text-sm font-semibold text-slate-700 ml-1">Email Address</label>
                             <input
-                                name="email"
+                            {...register('email')}
                                 type="email"
-                                required
                                 className="block w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-all shadow-sm"
-                                value={formData.email}
-                                onChange={handleChange}
                             />
+                            {errors.email && (
+                                <p className="mt-1 text-xs font-medium text-rose-500">
+                                    {errors.email.message}
+                                </p>
+                            )}
                         </div>
 
                         {/* Passwords Grid */}
@@ -123,24 +112,15 @@ const Signup = () => {
                             <div className="space-y-1">
                                 <label className="text-sm font-semibold text-slate-700 ml-1">Password</label>
                                 <input
-                                    name="password"
+                                {...register('password')}
                                     type="password"
-                                    required
                                     className="block w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-all shadow-sm"
-                                    value={formData.password}
-                                    onChange={handleChange}
                                 />
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-sm font-semibold text-slate-700 ml-1">Confirm Password</label>
-                                <input
-                                    name="passwordConfirmation"
-                                    type="password"
-                                    required
-                                    className="block w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-all shadow-sm"
-                                    value={formData.passwordConfirmation}
-                                    onChange={handleChange}
-                                />
+                                {errors.password && (
+                                    <p className="mt-1 text-xs font-medium text-rose-500">
+                                        {errors.password.message}
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>

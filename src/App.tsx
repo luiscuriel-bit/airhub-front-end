@@ -1,5 +1,6 @@
 import AuthProvider from './contexts/AuthProvider';
 import { Route, Routes } from 'react-router-dom';
+import {Toaster } from 'sonner';
 import './App.css';
 import Homepage from './components/Layout/Homepage';
 import Signup from './components/Auth/Signup';
@@ -49,6 +50,7 @@ const App = () => {
                     </Routes>
                 </main>
             </div>
+            <Toaster position='top-center' richColors />
         </AuthProvider>
     );
 };
