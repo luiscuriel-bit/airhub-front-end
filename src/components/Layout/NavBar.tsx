@@ -34,9 +34,12 @@ const NavBar = () => {
                                 <Link to="/profile" className="text-slate-600 hover:text-blue-600 font-medium transition-colors">
                                     Profile
                                 </Link>
-                                
+
                                 {user.role === 'admin' && (
                                     <>
+                                        <Link to="/admin/dashboard" className="text-slate-600 hover:text-blue-600 font-medium transition-colors border-l border-slate-200 pl-4">
+                                            Analytics
+                                        </Link>
                                         <Link to="/flights/new" className="text-slate-600 hover:text-blue-600 font-medium transition-colors border-l border-slate-200 pl-4">
                                             Create Flight
                                         </Link>
@@ -46,7 +49,7 @@ const NavBar = () => {
                                     </>
                                 )}
 
-                                <button 
+                                <button
                                     onClick={signout}
                                     className="text-rose-600 hover:bg-rose-50 px-3 py-2 rounded-md font-medium transition-all"
                                 >

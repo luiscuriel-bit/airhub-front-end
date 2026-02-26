@@ -1,6 +1,6 @@
 import AuthProvider from './contexts/AuthProvider';
 import { Route, Routes } from 'react-router-dom';
-import {Toaster } from 'sonner';
+import { Toaster } from 'sonner';
 import './App.css';
 import Homepage from './components/Layout/Homepage';
 import Signup from './components/Auth/Signup';
@@ -15,6 +15,7 @@ import ShowFlight from './pages/Flights/ShowFlight';
 import EditProfile from './components/Profile/EditProfile';
 import ShowBooking from './components/Booking/ShowBooking';
 import NavBar from './components/Layout/NavBar';
+import AdminDashboard from './components/Admin/AdminDashboard';
 import RequireAuth from './components/AccessControl/RequireAuth';
 import RequireAdmin from './components/AccessControl/RequireAdmin';
 import RedirectIfAuthed from './components/Auth/RedirectIfAuthed';
@@ -40,6 +41,7 @@ const App = () => {
                             <Route path="/profile/edit" element={<EditProfile />} />
 
                             <Route element={<RequireAdmin />}>
+                                <Route path="/admin/dashboard" element={<AdminDashboard />} />
                                 <Route path="/flights/new" element={<NewFlight />} />
                                 <Route path="/flights/:flightId/edit" element={<EditFlight />} />
                                 <Route path="/flights" element={<FlightList />} />
